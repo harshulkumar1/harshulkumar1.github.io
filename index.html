@@ -1418,11 +1418,121 @@ function showToast(msg){
 }
 
 // ═══════════════════════════════════════
+// APPLY SAVED CONTENT FROM ADMIN PANEL
+// ═══════════════════════════════════════
+function applyContent(){
+  try{
+    const saved=JSON.parse(localStorage.getItem('mp_content')||'{}');
+    if(!Object.keys(saved).length) return;
+    // HOME HERO
+    if(saved.home_tag) document.querySelectorAll('.hero-tag').forEach(el=>el.textContent=saved.home_tag);
+    if(saved.home_h1_line1||saved.home_h1_line2){const h=document.querySelector('.hero-h1');if(h)h.innerHTML=`${saved.home_h1_line1||'Crafted for'}<br><em>${saved.home_h1_line2||'Your Gaze'}</em>`;}
+    if(saved.home_subtext){document.querySelectorAll('.hero-p').forEach(el=>el.textContent=saved.home_subtext);}
+    if(saved.home_btn1){const b=document.querySelector('.hero-btns .btn-dark');if(b)b.textContent=saved.home_btn1;}
+    if(saved.home_btn2){const b=document.querySelector('.hero-btns .btn-outline');if(b)b.textContent=saved.home_btn2;}
+    if(saved.home_cats_title){document.querySelectorAll('.section-title').forEach(el=>el.textContent=saved.home_cats_title);}
+    // STRIP
+    const strips=document.querySelectorAll('.strip-item');
+    ['strip1','strip2','strip3','strip4'].forEach((k,i)=>{
+      if(!strips[i]) return;
+      const t=strips[i].querySelector('.strip-title'),d=strips[i].querySelector('.strip-desc');
+      if(t&&saved[k+'_title'])t.textContent=saved[k+'_title'];
+      if(d&&saved[k+'_desc'])d.textContent=saved[k+'_desc'];
+    });
+    // MEN
+    const mh=document.querySelector('.cat-men-content');
+    if(mh){
+      if(saved.men_eyebrow){const e=mh.querySelector('.eyebrow');if(e)e.textContent=saved.men_eyebrow;}
+      if(saved.men_h1){const h=mh.querySelector('h1');if(h)h.textContent=saved.men_h1;}
+      if(saved.men_sub){const p=mh.querySelector('p');if(p)p.textContent=saved.men_sub;}
+      if(saved.men_btn){const b=mh.querySelector('button');if(b)b.textContent=saved.men_btn;}
+    }
+    const mc=document.querySelector('.cat-men .cat-card-overlay');
+    if(mc){
+      if(saved.men_cat_label){const l=mc.querySelector('.cat-card-label');if(l)l.textContent=saved.men_cat_label;}
+      if(saved.men_cat_title){const t=mc.querySelector('.cat-card-title');if(t)t.textContent=saved.men_cat_title;}
+      if(saved.men_cat_sub){const s=mc.querySelector('.cat-card-sub');if(s)s.textContent=saved.men_cat_sub;}
+    }
+    document.querySelectorAll('.men-mat .mat-card').forEach((card,i)=>{
+      const keys=[['men_ti_name','men_ti_desc'],['men_me_name','men_me_desc'],['men_ac_name','men_ac_desc'],['men_tr_name','men_tr_desc']];
+      const[nk,dk]=keys[i]||[];
+      if(nk&&saved[nk]){const n=card.querySelector('.mat-card-name');if(n)n.textContent=saved[nk];}
+      if(dk&&saved[dk]){const d=card.querySelector('.mat-card-desc');if(d)d.textContent=saved[dk];}
+    });
+    // WOMEN
+    const wh=document.querySelector('.cat-women-content');
+    if(wh){
+      if(saved.women_eyebrow){const e=wh.querySelector('.eyebrow');if(e)e.textContent=saved.women_eyebrow;}
+      if(saved.women_h1_line1||saved.women_h1_line2){const h=wh.querySelector('h1');if(h)h.innerHTML=`${saved.women_h1_line1||'Grace in Every'}<br><em>${saved.women_h1_line2||'Detail'}</em>`;}
+      if(saved.women_sub){const p=wh.querySelector('p');if(p)p.textContent=saved.women_sub;}
+      if(saved.women_btn){const b=wh.querySelector('button');if(b)b.textContent=saved.women_btn;}
+    }
+    const wc=document.querySelector('.cat-women .cat-card-overlay');
+    if(wc){
+      if(saved.women_cat_label){const l=wc.querySelector('.cat-card-label');if(l)l.textContent=saved.women_cat_label;}
+      if(saved.women_cat_title){const t=wc.querySelector('.cat-card-title');if(t)t.textContent=saved.women_cat_title;}
+      if(saved.women_cat_sub){const s=wc.querySelector('.cat-card-sub');if(s)s.textContent=saved.women_cat_sub;}
+    }
+    document.querySelectorAll('.women-mat .mat-card').forEach((card,i)=>{
+      const keys=['women_ti_desc','women_me_desc','women_ac_desc','women_tr_desc'];
+      if(saved[keys[i]]){const d=card.querySelector('.mat-card-desc');if(d)d.textContent=saved[keys[i]];}
+    });
+    // KIDS
+    const kh=document.querySelector('.cat-kids-content');
+    if(kh){
+      if(saved.kids_eyebrow){const e=kh.querySelector('.eyebrow');if(e)e.textContent=saved.kids_eyebrow;}
+      if(saved.kids_h1_line1||saved.kids_h1_line2){const h=kh.querySelector('h1');if(h)h.innerHTML=`${saved.kids_h1_line1||'Big Adventures'}<br><em>${saved.kids_h1_line2||'Await'}</em>`;}
+      if(saved.kids_sub){const p=kh.querySelector('p');if(p)p.textContent=saved.kids_sub;}
+      if(saved.kids_btn){const b=kh.querySelector('button');if(b)b.textContent=saved.kids_btn;}
+    }
+    const kc=document.querySelector('.cat-kids .cat-card-overlay');
+    if(kc){
+      if(saved.kids_cat_label){const l=kc.querySelector('.cat-card-label');if(l)l.textContent=saved.kids_cat_label;}
+      if(saved.kids_cat_title){const t=kc.querySelector('.cat-card-title');if(t)t.textContent=saved.kids_cat_title;}
+      if(saved.kids_cat_sub){const s=kc.querySelector('.cat-card-sub');if(s)s.textContent=saved.kids_cat_sub;}
+    }
+    document.querySelectorAll('.kids-mat .mat-card').forEach((card,i)=>{
+      const keys=['kids_ti_desc','kids_me_desc','kids_ac_desc','kids_tr_desc'];
+      if(saved[keys[i]]){const d=card.querySelector('.mat-card-desc');if(d)d.textContent=saved[keys[i]];}
+    });
+    // UNISEX
+    const uh=document.querySelector('.cat-unisex-content');
+    if(uh){
+      if(saved.unisex_eyebrow){const e=uh.querySelector('.eyebrow');if(e)e.textContent=saved.unisex_eyebrow;}
+      if(saved.unisex_h1){const h=uh.querySelector('h1');if(h)h.textContent=saved.unisex_h1;}
+      if(saved.unisex_sub){const p=uh.querySelector('p');if(p)p.textContent=saved.unisex_sub;}
+      if(saved.unisex_btn){const b=uh.querySelector('button');if(b)b.textContent=saved.unisex_btn;}
+    }
+    const uc=document.querySelector('.cat-unisex .cat-card-overlay');
+    if(uc){
+      if(saved.unisex_cat_label){const l=uc.querySelector('.cat-card-label');if(l)l.textContent=saved.unisex_cat_label;}
+      if(saved.unisex_cat_title){const t=uc.querySelector('.cat-card-title');if(t)t.textContent=saved.unisex_cat_title;}
+      if(saved.unisex_cat_sub){const s=uc.querySelector('.cat-card-sub');if(s)s.textContent=saved.unisex_cat_sub;}
+    }
+    document.querySelectorAll('.unisex-mat .mat-card').forEach((card,i)=>{
+      const keys=['unisex_ti_desc','unisex_me_desc','unisex_ac_desc','unisex_tr_desc'];
+      if(saved[keys[i]]){const d=card.querySelector('.mat-card-desc');if(d)d.textContent=saved[keys[i]];}
+    });
+    // SHOP ALL
+    const sa=document.querySelector('.shopall-hero');
+    if(sa){
+      if(saved.shopall_h1){const h=sa.querySelector('h1');if(h)h.textContent=saved.shopall_h1;}
+      if(saved.shopall_sub){const p=sa.querySelector('p');if(p)p.textContent=saved.shopall_sub;}
+    }
+    // FOOTER
+    document.querySelectorAll('.footer-brand p').forEach(el=>{if(saved.footer_tagline)el.textContent=saved.footer_tagline;});
+    document.querySelectorAll('.footer-bottom span:last-child').forEach(el=>{if(saved.footer_domain)el.textContent=saved.footer_domain;});
+    document.querySelectorAll('.footer-bottom span:first-child').forEach(el=>{if(saved.footer_copy)el.textContent=saved.footer_copy;});
+  }catch(e){}
+}
+
+// ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
 buildCarousel();
 renderCart();
 startAuto();
+applyContent();
 </script>
 </body>
 </html>

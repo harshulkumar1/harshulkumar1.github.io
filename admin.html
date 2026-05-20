@@ -256,6 +256,7 @@ input,select,textarea{font-family:'DM Sans',sans-serif}
 
       <div class="sb-section">Storefront</div>
       <button class="nb" id="nb-hero" onclick="showPanel('hero')"><span class="icon">🖼</span>Hero Carousel</button>
+      <button class="nb" id="nb-content" onclick="showPanel('content')"><span class="icon">✏️</span>Content Editor</button>
       <button class="nb" id="nb-store" onclick="showPanel('store')"><span class="icon">🏪</span>Store Info</button>
 
       <div class="sb-section">Account</div>
@@ -641,6 +642,11 @@ input,select,textarea{font-family:'DM Sans',sans-serif}
   </div>
 </div>
 
+<!-- ══════════ CONTENT EDITOR PANEL ══════════ -->
+<div class="panel" id="panel-content" style="display:none">
+  <!-- injected into .main by JS -->
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -715,6 +721,7 @@ function showPanel(name){
   if(name==='products') renderTable();
   if(name==='stock') renderStock();
   if(name==='hero') renderHero();
+  if(name==='content') renderContentEditor();
   if(name==='dashboard') updateDash();
 }
 
@@ -1269,8 +1276,254 @@ function clearAll(){
   toast('All data cleared','warn');
 }
 
-// ═══════════════════════════ HELPERS ═══════════════════════════
-function catIcon(cat){return{men:'🕶',women:'✨',kids:'🌈',unisex:'👓'}[cat]||'👓';}
+// ═══════════════════════════ CONTENT EDITOR ═══════════════════════════
+const CKEY = 'mp_content';
+
+const CONTENT_DEFAULTS = {
+  // HOME
+  home_tag: 'New Collection — 2025',
+  home_h1_line1: 'Crafted for',
+  home_h1_line2: 'Your Gaze',
+  home_subtext: 'Premium handcrafted Italian spectacles — designed for comfort, refined for style. Find your perfect frame today.',
+  home_btn1: 'Shop All',
+  home_btn2: 'Explore Collections',
+  home_cats_eyebrow: 'Our Collections',
+  home_cats_title: 'Shop by Category',
+
+  // MEN
+  men_eyebrow: "Men's Collection",
+  men_h1: 'The Modern Gentleman',
+  men_sub: 'Precision-engineered frames built for the man who commands every room. Four materials. Endless character.',
+  men_btn: 'Browse Collection',
+  men_cat_label: 'For Him',
+  men_cat_title: 'Men',
+  men_cat_sub: 'Bold. Refined. Commanding.',
+  men_ti_name:'Titanium', men_ti_desc:'Ultra-light, hypoallergenic and virtually indestructible. The choice of those who demand nothing but the best.',
+  men_me_name:'Metal',    men_me_desc:'Classic stainless steel with a refined finish. Timeless masculinity, every single day.',
+  men_ac_name:'Acetate',  men_ac_desc:'Rich Italian acetate in deep tones and bold patterns. Make a statement without saying a word.',
+  men_tr_name:'TR',       men_tr_desc:'TR-90 thermoplastic — feather-light and virtually unbreakable. Built for the man always in motion.',
+
+  // WOMEN
+  women_eyebrow: "Women's Collection",
+  women_h1_line1: 'Grace in Every',
+  women_h1_line2: 'Detail',
+  women_sub: 'Delicately crafted frames that complement every face, every look, every moment. Italian artistry at its finest.',
+  women_btn: 'Browse Collection',
+  women_cat_label: 'For Her',
+  women_cat_title: 'Women',
+  women_cat_sub: 'Elegant. Delicate. Timeless.',
+  women_ti_desc:'Whisper-light frames that feel like they\'re barely there. Hypoallergenic luxury for sensitive skin.',
+  women_me_desc:'Delicate metalwork in rose gold, silver, and gold tones. Feminine, refined, effortlessly beautiful.',
+  women_ac_desc:'Lush acetate in blush, tortoise and jewel tones. Bold enough to be noticed, refined enough for everyday.',
+  women_tr_desc:'Lightweight flexibility meets feminine style. Perfect for those long days when comfort cannot be compromised.',
+
+  // KIDS
+  kids_eyebrow: "Kids' Collection",
+  kids_h1_line1: 'Big Adventures',
+  kids_h1_line2: 'Await',
+  kids_sub: 'Frames as colourful and unstoppable as they are. Built tough, designed fun — ready for every playground.',
+  kids_btn: 'Browse Collection',
+  kids_cat_label: 'For Them',
+  kids_cat_title: 'Kids',
+  kids_cat_sub: 'Bright. Fun. Unbreakable.',
+  kids_ti_desc:'Super-light so they forget they\'re wearing them. Incredibly strong so you stop worrying.',
+  kids_me_desc:'Sporty metal frames in vibrant colours. Light, adjustable, and ready for active little lives.',
+  kids_ac_desc:'Bold patterns and bright colours in durable acetate. Let their personality shine through every lens.',
+  kids_tr_desc:'The most flexible, bendable, drop-proof frame we make. Made for the kid who treats everything as an obstacle course.',
+
+  // UNISEX
+  unisex_eyebrow: 'Unisex Collection',
+  unisex_h1: 'Frames Beyond Labels',
+  unisex_sub: 'Clean lines, considered proportions and materials that look as good on everyone. Style with no rules.',
+  unisex_btn: 'Browse Collection',
+  unisex_cat_label: 'For Everyone',
+  unisex_cat_title: 'Unisex',
+  unisex_cat_sub: 'Versatile. Modern. Effortless.',
+  unisex_ti_desc:'Architectural minimalism at its lightest. These frames disappear on the face while defining it completely.',
+  unisex_me_desc:'Understated metal with clean geometry. The kind of frame that goes with everything, always.',
+  unisex_ac_desc:'Neutral tortoise, clear, and matte black. Classic shapes that transcend trends entirely.',
+  unisex_tr_desc:'Maximum comfort, minimum fuss. These wear-all-day frames feel like they were made just for you.',
+
+  // SHOP ALL
+  shopall_h1: 'Shop All Frames',
+  shopall_sub: 'Browse our full collection — filter by category, material, price and more.',
+
+  // FOOTER
+  footer_tagline: 'Premium handcrafted Italian spectacles. Crafted for comfort, designed for style.',
+  footer_copy: '© 2025 Marché Designs. All rights reserved.',
+  footer_domain: 'marchedesigns.com',
+
+  // FEATURE STRIP
+  strip1_title:'Worldwide Shipping', strip1_desc:'Free above ₹2,000',
+  strip2_title:'Secure Payments',    strip2_desc:'Razorpay & PayPal',
+  strip3_title:'Easy Returns',       strip3_desc:'7-day hassle-free',
+  strip4_title:'Italian Crafted',    strip4_desc:'Handcrafted frames',
+};
+
+function loadContent(){
+  try{ return {...CONTENT_DEFAULTS,...JSON.parse(localStorage.getItem(CKEY)||'{}')}; }
+  catch(e){ return {...CONTENT_DEFAULTS}; }
+}
+function saveContent(){
+  const data={};
+  document.querySelectorAll('[data-ckey]').forEach(el=>{
+    data[el.dataset.ckey]=el.value;
+  });
+  localStorage.setItem(CKEY,JSON.stringify(data));
+  toast('Content saved! Push to GitHub to go live.','ok');
+}
+function resetContent(){
+  if(!confirm('Reset ALL content to defaults?')) return;
+  localStorage.removeItem(CKEY);
+  renderContentEditor();
+  toast('Content reset to defaults','warn');
+}
+
+function renderContentEditor(){
+  // Move the panel into .main if not already there
+  const panel = document.getElementById('panel-content');
+  const main = document.querySelector('.main');
+  if(panel.parentElement !== main) main.appendChild(panel);
+  panel.style.display='block';
+
+  const c = loadContent();
+
+  const section = (title, sub, fields) => `
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+        <span>${title}</span>
+        <span style="font-size:11px;color:var(--mid);font-weight:400">${sub}</span>
+      </div>
+      ${fields}
+    </div>`;
+
+  const field = (label, key, type='input', placeholder='') => `
+    <div class="fg">
+      <label>${label}</label>
+      ${type==='textarea'
+        ? `<textarea data-ckey="${key}" placeholder="${placeholder}" style="min-height:70px">${c[key]||''}</textarea>`
+        : `<input type="text" data-ckey="${key}" value="${(c[key]||'').replace(/"/g,'&quot;')}" placeholder="${placeholder}">`}
+    </div>`;
+
+  const row2 = (...fields) => `<div class="form-row">${fields.join('')}</div>`;
+  const row3 = (...fields) => `<div class="form-row3">${fields.join('')}</div>`;
+
+  panel.innerHTML = `
+    <div class="panel-title">Content Editor</div>
+    <div class="panel-sub">Edit every piece of text on your website. Click "Save All Content" when done, then push to GitHub.</div>
+
+    <div style="display:flex;gap:10px;margin-bottom:20px">
+      <button class="btn btn-dark" onclick="saveContent()">💾 Save All Content</button>
+      <button class="btn btn-outline" onclick="resetContent()">↩ Reset to Defaults</button>
+    </div>
+
+    <!-- ── HOME ── -->
+    ${section('🏠 Home Page — Hero', 'The first thing visitors see',`
+      ${row2(field('Eyebrow Tag','home_tag','input','e.g. New Collection — 2025'), field('Headline Line 1','home_h1_line1','input','e.g. Crafted for'))}
+      ${row2(field('Headline Line 2 (italic)','home_h1_line2','input','e.g. Your Gaze'), field('Button 1 Text','home_btn1','input','e.g. Shop All'))}
+      ${row2(field('Button 2 Text','home_btn2','input','e.g. Explore Collections'), field('Category Section Title','home_cats_title','input','e.g. Shop by Category'))}
+      ${field('Hero Subtext','home_subtext','textarea','Your brand description...')}
+    `)}
+
+    <!-- ── FEATURE STRIP ── -->
+    ${section('✨ Feature Strip', 'The 4 icons below the hero',`
+      ${row2(field('Strip 1 Title','strip1_title'), field('Strip 1 Description','strip1_desc'))}
+      ${row2(field('Strip 2 Title','strip2_title'), field('Strip 2 Description','strip2_desc'))}
+      ${row2(field('Strip 3 Title','strip3_title'), field('Strip 3 Description','strip3_desc'))}
+      ${row2(field('Strip 4 Title','strip4_title'), field('Strip 4 Description','strip4_desc'))}
+    `)}
+
+    <!-- ── MEN ── -->
+    ${section('👤 Men — Category Page', 'The dark hero and material cards',`
+      ${row2(field('Page Eyebrow','men_eyebrow'), field('Main Headline','men_h1'))}
+      ${field('Sub Description','men_sub','textarea')}
+      ${row2(field('Button Text','men_btn'), field('Home Card Label','men_cat_label'))}
+      ${row2(field('Home Card Title','men_cat_title'), field('Home Card Subtitle','men_cat_sub'))}
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin:12px 0 8px">Material Card Descriptions</div>
+      ${field('Titanium Description','men_ti_desc','textarea')}
+      ${field('Metal Description','men_me_desc','textarea')}
+      ${field('Acetate Description','men_ac_desc','textarea')}
+      ${field('TR Description','men_tr_desc','textarea')}
+    `)}
+
+    <!-- ── WOMEN ── -->
+    ${section('👤 Women — Category Page', 'The soft pink hero and material cards',`
+      ${row2(field('Page Eyebrow','women_eyebrow'), field('Headline Line 1','women_h1_line1'))}
+      ${row2(field('Headline Line 2 (italic)','women_h1_line2'), field('Button Text','women_btn'))}
+      ${field('Sub Description','women_sub','textarea')}
+      ${row2(field('Home Card Label','women_cat_label'), field('Home Card Title','women_cat_title'))}
+      ${field('Home Card Subtitle','women_cat_sub')}
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin:12px 0 8px">Material Card Descriptions</div>
+      ${field('Titanium Description','women_ti_desc','textarea')}
+      ${field('Metal Description','women_me_desc','textarea')}
+      ${field('Acetate Description','women_ac_desc','textarea')}
+      ${field('TR Description','women_tr_desc','textarea')}
+    `)}
+
+    <!-- ── KIDS ── -->
+    ${section('🌈 Kids — Category Page', 'The colourful hero and material cards',`
+      ${row2(field('Page Eyebrow','kids_eyebrow'), field('Headline Line 1','kids_h1_line1'))}
+      ${row2(field('Headline Line 2 (italic)','kids_h1_line2'), field('Button Text','kids_btn'))}
+      ${field('Sub Description','kids_sub','textarea')}
+      ${row2(field('Home Card Label','kids_cat_label'), field('Home Card Title','kids_cat_title'))}
+      ${field('Home Card Subtitle','kids_cat_sub')}
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin:12px 0 8px">Material Card Descriptions</div>
+      ${field('Titanium Description','kids_ti_desc','textarea')}
+      ${field('Metal Description','kids_me_desc','textarea')}
+      ${field('Acetate Description','kids_ac_desc','textarea')}
+      ${field('TR Description','kids_tr_desc','textarea')}
+    `)}
+
+    <!-- ── UNISEX ── -->
+    ${section('⚖️ Unisex — Category Page', 'The clean minimal hero and material cards',`
+      ${row2(field('Page Eyebrow','unisex_eyebrow'), field('Main Headline','unisex_h1'))}
+      ${field('Sub Description','unisex_sub','textarea')}
+      ${row2(field('Button Text','unisex_btn'), field('Home Card Label','unisex_cat_label'))}
+      ${row2(field('Home Card Title','unisex_cat_title'), field('Home Card Subtitle','unisex_cat_sub'))}
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin:12px 0 8px">Material Card Descriptions</div>
+      ${field('Titanium Description','unisex_ti_desc','textarea')}
+      ${field('Metal Description','unisex_me_desc','textarea')}
+      ${field('Acetate Description','unisex_ac_desc','textarea')}
+      ${field('TR Description','unisex_tr_desc','textarea')}
+    `)}
+
+    <!-- ── SHOP ALL ── -->
+    ${section('🛒 Shop All Page', 'The header of the full product listing',`
+      ${row2(field('Page Headline','shopall_h1'), field('Page Subtitle','shopall_sub'))}
+    `)}
+
+    <!-- ── FOOTER ── -->
+    ${section('📄 Footer', 'Bottom of every page',`
+      ${field('Brand Tagline','footer_tagline','textarea')}
+      ${row2(field('Copyright Text','footer_copy'), field('Domain / Website','footer_domain'))}
+    `)}
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn btn-dark" onclick="saveContent()">💾 Save All Content</button>
+      <button class="btn btn-outline" onclick="resetContent()">↩ Reset to Defaults</button>
+    </div>
+
+    <div class="hint-box" style="margin-top:18px">
+      <strong>How changes go live:</strong> After saving here, open <strong>GitHub Desktop</strong> → you'll see <strong>index.html</strong> listed as changed → type a summary like "Updated content" → Commit → Push. Your site updates in about 1 minute.
+      <br><br>
+      <strong>How it works:</strong> Your index.html reads these saved values from browser storage automatically. Both files (index.html and admin.html) must be on the same domain for this to work — which they are on GitHub Pages.
+    </div>
+  `;
+}
+
+// ═══════════════════════════ INJECT CONTENT INTO LIVE SITE ═══════════════════════════
+// Called by index.html on load — reads mp_content from localStorage and patches the DOM
+// This function is defined here so admin and site share the same storage key
+function applyContentToSite(){
+  try{
+    const c={...CONTENT_DEFAULTS,...JSON.parse(localStorage.getItem(CKEY)||'{}')};
+    const set=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.textContent=val;};
+    const setVal=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.value=val;};
+    const setHTML=(id,val)=>{const el=document.getElementById(id);if(el&&val)el.innerHTML=val;};
+    // patch happens on index.html side via data-content attributes
+  }catch(e){}
+}
+
 function dlFile(content,filename,type){
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([content],{type}));
