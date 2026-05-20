@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marché Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fdf6f0;--white:#fff;--dark:#2a1f1a;--mid:#7a6a60;--border:#e8ddd4;
+  --peach:#f5ede3;--mauve:#ede3ee;--sage:#e3edf5;--mint:#e3f0e8;
+  --accent:#c9a07a;--green:#2a6b1f;--red:#8a2a2a;--orange:#b86a00;
+}
+body{font-family:'DM Sans',sans-serif;background:#f2ede8;color:var(--dark);font-size:14px}
+button{cursor:pointer;font-family:'DM Sans',sans-serif}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--dark)}
+.login-box{background:var(--white);padding:48px;width:380px}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:28px;letter-spacing:4px;text-transform:uppercase;text-align:center;margin-bottom:6px}
+.login-sub{text-align:center;font-size:12px;color:var(--mid);letter-spacing:1px;margin-bottom:36px}
+.login-label{font-size:11px;letter-spacing:1px;color:var(--mid);display:block;margin-bottom:6px;text-transform:uppercase}
+.login-input{width:100%;border:1px solid var(--border);background:var(--bg);padding:12px 14px;font-size:14px;color:var(--dark);outline:none;margin-bottom:16px;transition:border-color .2s}
+.login-input:focus{border-color:var(--dark)}
+.login-btn{width:100%;background:var(--dark);color:var(--white);border:none;padding:14px;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.login-err{color:#8a2a2a;font-size:12px;text-align:center;margin-top:12px;min-height:18px}
+.login-hint{font-size:11px;color:var(--mid);text-align:center;margin-top:16px;line-height:1.8}
+
+/* SHELL */
+.admin-shell{display:none;min-height:100vh}
+.admin-top{background:var(--dark);padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100}
+.admin-logo{font-family:'Cormorant Garamond',serif;font-size:18px;letter-spacing:3px;text-transform:uppercase;color:var(--white)}
+.admin-logo small{font-size:11px;letter-spacing:1px;color:var(--accent);margin-left:10px;font-family:'DM Sans',sans-serif;font-weight:400}
+.top-right{display:flex;gap:10px;align-items:center}
+.top-link{background:none;border:none;color:rgba(253,246,240,.6);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 14px}
+.top-link:hover{color:var(--white)}
+.logout-btn{background:none;border:1px solid rgba(253,246,240,.3);color:rgba(253,246,240,.7);font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:6px 16px}
+.logout-btn:hover{background:rgba(253,246,240,.1);color:var(--white)}
+.admin-body{display:flex;min-height:calc(100vh - 56px)}
+
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--white);border-right:1px solid var(--border);padding:16px 0;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sb-section{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);padding:14px 20px 6px;margin-top:4px}
+.nb{display:flex;align-items:center;gap:10px;width:100%;padding:10px 20px;background:none;border:none;color:var(--mid);font-size:13px;text-align:left;transition:all .2s;border-left:3px solid transparent}
+.nb:hover{background:var(--bg);color:var(--dark)}
+.nb.active{background:var(--peach);color:var(--dark);border-left-color:var(--dark)}
+.nb .icon{font-size:15px;width:20px;text-align:center}
+.nb .badge-count{margin-left:auto;background:var(--red);color:var(--white);border-radius:10px;padding:1px 7px;font-size:10px}
+
+/* MAIN */
+.main{flex:1;padding:28px;overflow-y:auto;max-width:calc(100vw - 220px)}
+.panel{display:none}
+.panel.active{display:block}
+.panel-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:300;margin-bottom:4px}
+.panel-sub{font-size:13px;color:var(--mid);margin-bottom:24px}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);padding:22px;margin-bottom:18px}
+.card-title{font-size:12px;font-weight:500;letter-spacing:.5px;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
+.stat{background:var(--white);border:1px solid var(--border);padding:18px}
+.stat-label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:6px}
+.stat-val{font-size:24px;font-weight:500}
+.stat-sub{font-size:11px;color:var(--accent);margin-top:3px}
+.stat.warn .stat-val{color:var(--red)}
+
+/* BUTTONS */
+.btn{border:none;padding:10px 22px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.btn-dark{background:var(--dark);color:var(--white)}.btn-dark:hover{background:#4a3830}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--mid)}.btn-outline:hover{border-color:var(--dark);color:var(--dark)}
+.btn-green{background:var(--green);color:var(--white)}
+.btn-red{background:var(--red);color:var(--white)}
+.btn-orange{background:var(--orange);color:var(--white)}
+.btn-sm{padding:7px 14px;font-size:10px}
+
+/* FORM */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.form-row4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:5px}
+.fg input,.fg select,.fg textarea{width:100%;border:1px solid var(--border);background:var(--bg);padding:9px 12px;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--dark)}
+.fg textarea{resize:vertical;min-height:70px}
+
+/* STOCK BADGE */
+.stock-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;font-size:10px;letter-spacing:.5px;text-transform:uppercase;font-weight:500;border-radius:2px}
+.in-stock{background:#e3f0e8;color:#1a5a10}
+.low-stock{background:#fff4e0;color:#7a4a00}
+.out-stock{background:#fde8e8;color:#7a1a1a}
+
+/* PRODUCT TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);padding:10px 12px;border-bottom:1px solid var(--border);font-weight:400;white-space:nowrap}
+.tbl td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.tbl tr:hover td{background:#fdf9f6}
+.tbl-img{width:48px;height:48px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;flex-shrink:0}
+.tbl-img img{width:100%;height:100%;object-fit:cover}
+.prod-name-cell{font-weight:500;max-width:160px}
+.prod-name-cell .prod-sku{font-size:10px;color:var(--mid);font-weight:400;margin-top:1px}
+.color-pips{display:flex;gap:3px;flex-wrap:wrap;max-width:100px}
+.pip{width:12px;height:12px;border-radius:50%;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
+.tbl-actions{display:flex;gap:5px;flex-wrap:wrap}
+.act{padding:5px 10px;font-size:10px;letter-spacing:.5px;border:1px solid var(--border);background:var(--white);color:var(--mid);transition:all .2s;white-space:nowrap}
+.act:hover{border-color:var(--dark);color:var(--dark)}
+.act.danger:hover{border-color:var(--red);color:var(--red)}
+.act.success:hover{border-color:var(--green);color:var(--green)}
+
+/* BULK UPLOAD */
+.csv-zone{border:2px dashed var(--border);padding:40px;text-align:center;transition:all .2s;cursor:pointer}
+.csv-zone:hover,.csv-zone.drag{border-color:var(--dark);background:var(--bg)}
+.csv-icon{font-size:36px;margin-bottom:10px}
+.csv-text{font-size:14px;color:var(--dark);margin-bottom:4px}
+.csv-sub{font-size:12px;color:var(--mid)}
+.csv-preview{overflow-x:auto;max-height:320px;overflow-y:auto}
+.preview-row-ok{background:#f0faf0}
+.preview-row-err{background:#faf0f0}
+.preview-row-warn{background:#fffbf0}
+.err-cell{font-size:11px;color:var(--red)}
+.warn-cell{font-size:11px;color:var(--orange)}
+.ok-cell{font-size:11px;color:var(--green)}
+.progress-bar-wrap{background:var(--border);height:6px;border-radius:3px;overflow:hidden;margin:12px 0}
+.progress-bar{height:100%;background:var(--dark);transition:width .3s;width:0}
+
+/* STOCK MANAGER */
+.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.stock-card{background:var(--white);border:1px solid var(--border);padding:16px}
+.stock-card-top{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.stock-card-img{width:52px;height:52px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;overflow:hidden}
+.stock-card-img img{width:100%;height:100%;object-fit:cover}
+.stock-card-name{font-size:13px;font-weight:500;margin-bottom:3px}
+.stock-card-meta{font-size:11px;color:var(--mid)}
+.stock-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);gap:8px}
+.stock-row:last-child{border:none}
+.stock-color{display:flex;align-items:center;gap:6px;font-size:12px}
+.stock-input{width:70px;border:1px solid var(--border);background:var(--bg);padding:5px 8px;font-size:12px;text-align:center;outline:none}
+.stock-input:focus{border-color:var(--dark)}
+.stock-toggle{display:flex;gap:4px}
+.stock-toggle button{padding:3px 8px;font-size:10px;border:1px solid var(--border);background:none;color:var(--mid);transition:all .2s}
+.stock-toggle button.active-in{border-color:var(--green);color:var(--green);background:#f0faf0}
+.stock-toggle button.active-out{border-color:var(--red);color:var(--red);background:#fdf0f0}
+.stock-toggle button.active-low{border-color:var(--orange);color:var(--orange);background:#fffbf0}
+
+/* COLOUR EDITOR */
+.color-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{display:flex;align-items:center;gap:5px;background:var(--bg);border:1px solid var(--border);padding:5px 10px}
+.chip-swatch{width:16px;height:16px;border-radius:50%;border:1px solid rgba(0,0,0,.12);flex-shrink:0}
+.chip-name{font-size:12px}
+.chip-del{background:none;border:none;color:var(--mid);font-size:13px;padding:0 0 0 3px;line-height:1}
+.chip-del:hover{color:var(--red)}
+.add-color-row{display:flex;gap:8px;align-items:center}
+.color-hex-pick{width:42px;height:34px;border:1px solid var(--border);padding:2px;background:var(--white);cursor:pointer}
+.color-name-inp{flex:1;border:1px solid var(--border);background:var(--bg);padding:7px 10px;font-size:13px}
+.preset-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.preset-btn{display:flex;align-items:center;gap:4px;padding:4px 9px;border:1px solid var(--border);background:var(--white);font-size:11px;color:var(--mid);transition:all .2s}
+.preset-btn:hover{border-color:var(--dark);color:var(--dark)}
+
+/* IMAGE UPLOAD */
+.img-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.img-thumb{width:76px;height:76px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:26px;position:relative;overflow:hidden}
+.img-thumb img{width:100%;height:100%;object-fit:cover}
+.img-del{position:absolute;top:2px;right:2px;background:rgba(42,31,26,.75);color:var(--white);border:none;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center}
+.img-main-label{position:absolute;bottom:0;left:0;right:0;background:rgba(42,31,26,.6);color:var(--white);font-size:9px;text-align:center;padding:2px;letter-spacing:.5px}
+.img-upload-box{border:2px dashed var(--border);width:76px;height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--mid);gap:2px;transition:all .2s}
+.img-upload-box:hover{border-color:var(--dark);color:var(--dark)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(42,31,26,.5);z-index:500;display:none;align-items:flex-start;justify-content:center;padding:28px;overflow-y:auto}
+.modal-bg.open{display:flex}
+.modal{background:var(--white);width:740px;padding:32px;position:relative;max-width:96vw}
+.modal-close{position:absolute;top:18px;right:18px;background:none;border:none;font-size:20px;color:var(--mid)}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:300;margin-bottom:3px}
+.modal-sub{font-size:12px;color:var(--mid);margin-bottom:22px}
+.modal-foot{border-top:1px solid var(--border);padding-top:16px;margin-top:4px;display:flex;gap:10px;justify-content:flex-end}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;padding:11px 22px;font-size:13px;z-index:900;opacity:0;transform:translateY(6px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.info{background:var(--dark);color:var(--white)}
+.toast.ok{background:#1a5a10;color:var(--white)}
+.toast.err{background:#6a1010;color:var(--white)}
+.toast.warn{background:#7a4a00;color:var(--white)}
+
+/* MISC */
+.empty-state{text-align:center;padding:50px 20px;color:var(--mid)}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.tag{display:inline-block;padding:2px 8px;font-size:10px;letter-spacing:.5px;text-transform:uppercase}
+.tag-new{background:#e3f0e8;color:#1a5a10}
+.tag-sale{background:#fde8e8;color:#7a1a1a}
+.tag-best{background:#fff4e0;color:#7a4a00}
+.tag-none{background:var(--bg);color:var(--mid)}
+.hint-box{background:var(--peach);border:1px solid #e0c8b0;padding:14px 16px;font-size:12px;color:var(--dark);line-height:1.7;margin-bottom:16px}
+.hint-box strong{font-weight:500}
+.step-list{counter-reset:steps;list-style:none;padding:0}
+.step-list li{counter-increment:steps;display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.step-list li:last-child{border:none}
+.step-list li::before{content:counter(steps);width:24px;height:24px;background:var(--dark);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.filter-bar{display:flex;gap:10px;margin-bottom:16px;align-items:center;flex-wrap:wrap}
+.search-inp{border:1px solid var(--border);background:var(--white);padding:8px 12px;font-size:13px;color:var(--dark);outline:none;width:200px}
+.filter-sel{border:1px solid var(--border);background:var(--white);padding:8px 10px;font-size:12px;color:var(--dark);outline:none}
+.ml-auto{margin-left:auto}
+.flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.pw-strength{font-size:11px;margin-top:4px}
+.pw-weak{color:var(--red)}.pw-ok{color:var(--orange)}.pw-strong{color:var(--green)}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+.toggle-info .tn{font-size:13px;font-weight:500;margin-bottom:2px}
+.toggle-info .td{font-size:12px;color:var(--mid)}
+.toggle{position:relative;width:42px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.tslider{position:absolute;inset:0;background:var(--border);transition:.3s;border-radius:22px;cursor:pointer}
+.tslider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:var(--white);border-radius:50%;transition:.3s}
+.toggle input:checked+.tslider{background:var(--dark)}
+.toggle input:checked+.tslider:before{transform:translateX(20px)}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Marché</div>
+    <div class="login-sub">Admin Panel</div>
+    <label class="login-label">Password</label>
+    <input class="login-input" type="password" id="login-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-hint">Default password: <strong>marche2025</strong><br>Change it in Settings after first login.</div>
+  </div>
+</div>
+
+<!-- ADMIN SHELL -->
+<div class="admin-shell" id="admin-shell">
+  <div class="admin-top">
+    <div class="admin-logo">Marché <small>Admin</small></div>
+    <div class="top-right">
+      <button class="top-link" onclick="window.open('index.html','_blank')">View Live Site ↗</button>
+      <button class="logout-btn" onclick="doLogout()">Log Out</button>
+    </div>
+  </div>
+  <div class="admin-body">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-section">Overview</div>
+      <button class="nb active" id="nb-dashboard" onclick="showPanel('dashboard')"><span class="icon">📊</span>Dashboard</button>
+
+      <div class="sb-section">Products</div>
+      <button class="nb" id="nb-products" onclick="showPanel('products')"><span class="icon">👓</span>All Products</button>
+      <button class="nb" id="nb-add" onclick="showPanel('add')"><span class="icon">＋</span>Add Single</button>
+      <button class="nb" id="nb-bulk" onclick="showPanel('bulk')"><span class="icon">📥</span>Bulk Upload CSV</button>
+      <button class="nb" id="nb-stock" onclick="showPanel('stock')"><span class="icon">📦</span>Stock & Sold Out<span class="badge-count" id="lowstock-badge" style="display:none">!</span></button>
+
+      <div class="sb-section">Storefront</div>
+      <button class="nb" id="nb-hero" onclick="showPanel('hero')"><span class="icon">🖼</span>Hero Carousel</button>
+      <button class="nb" id="nb-store" onclick="showPanel('store')"><span class="icon">🏪</span>Store Info</button>
+
+      <div class="sb-section">Account</div>
+      <button class="nb" id="nb-settings" onclick="showPanel('settings')"><span class="icon">⚙️</span>Settings</button>
+    </div>
+
+    <!-- MAIN PANELS -->
+    <div class="main">
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="panel-title">Dashboard</div>
+        <div class="panel-sub">Your store at a glance.</div>
+        <div class="stats-grid">
+          <div class="stat"><div class="stat-label">Total Products</div><div class="stat-val" id="s-total">0</div><div class="stat-sub">Across all categories</div></div>
+          <div class="stat"><div class="stat-label">In Stock</div><div class="stat-val" id="s-instock">0</div><div class="stat-sub">Available to buy</div></div>
+          <div class="stat warn"><div class="stat-label">Low Stock</div><div class="stat-val" id="s-low">0</div><div class="stat-sub">≤ 5 units</div></div>
+          <div class="stat warn"><div class="stat-label">Sold Out</div><div class="stat-val" id="s-out">0</div><div class="stat-sub">Marked unavailable</div></div>
+          <div class="stat"><div class="stat-label">Hero Slides</div><div class="stat-val" id="s-slides">0</div><div class="stat-sub">Rotating on homepage</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Quick Actions</div>
+          <div class="flex">
+            <button class="btn btn-dark" onclick="showPanel('add')">+ Add Single Product</button>
+            <button class="btn btn-dark" onclick="showPanel('bulk')">📥 Bulk Upload CSV</button>
+            <button class="btn btn-outline" onclick="showPanel('stock')">📦 Manage Stock</button>
+            <button class="btn btn-outline" onclick="showPanel('hero')">🖼 Edit Carousel</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Getting Started</div>
+          <ol class="step-list">
+            <li><div><strong>Bulk upload your products</strong> — Go to "Bulk Upload CSV", download the template, fill it in Excel/Google Sheets, upload it. Hundreds of products in minutes.</div></li>
+            <li><div><strong>Set stock levels</strong> — Go to "Stock & Sold Out" to set how many of each colour is available. Low stock shows a warning; 0 shows "Sold Out" on your site.</div></li>
+            <li><div><strong>Update the hero carousel</strong> — Upload your best product photos so they rotate on the home page.</div></li>
+            <li><div><strong>Push to GitHub</strong> — Open GitHub Desktop → Commit → Push. Live in 1 minute.</div></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- ALL PRODUCTS -->
+      <div class="panel" id="panel-products">
+        <div class="panel-title">All Products</div>
+        <div class="panel-sub">Manage, edit, or remove your products.</div>
+        <div class="filter-bar">
+          <input class="search-inp" type="text" id="psearch" placeholder="Search by name or SKU…" oninput="renderTable()">
+          <select class="filter-sel" id="pf-cat" onchange="renderTable()">
+            <option value="">All Categories</option>
+            <option>men</option><option>women</option><option>kids</option><option>unisex</option>
+          </select>
+          <select class="filter-sel" id="pf-mat" onchange="renderTable()">
+            <option value="">All Materials</option>
+            <option>titanium</option><option>metal</option><option>acetate</option><option>tr</option>
+          </select>
+          <select class="filter-sel" id="pf-stock" onchange="renderTable()">
+            <option value="">All Stock</option>
+            <option value="in">In Stock</option>
+            <option value="low">Low Stock</option>
+            <option value="out">Sold Out</option>
+          </select>
+          <button class="btn btn-dark btn-sm ml-auto" onclick="showPanel('add')">+ Add Product</button>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="tbl">
+            <thead><tr>
+              <th style="width:56px">Image</th>
+              <th>Name / SKU</th>
+              <th>Category</th>
+              <th>Material</th>
+              <th>Price</th>
+              <th>Colours</th>
+              <th>Stock</th>
+              <th>Badge</th>
+              <th>Actions</th>
+            </tr></thead>
+            <tbody id="prod-tbody"></tbody>
+          </table>
+          <div id="prod-empty" class="empty-state" style="display:none">
+            <div style="font-size:40px;margin-bottom:10px">👓</div>
+            No products yet. <a onclick="showPanel('bulk')" style="color:var(--accent);cursor:pointer">Bulk upload a CSV →</a> or <a onclick="showPanel('add')" style="color:var(--accent);cursor:pointer">add one manually →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD SINGLE PRODUCT -->
+      <div class="panel" id="panel-add">
+        <div class="panel-title" id="add-title">Add Single Product</div>
+        <div class="panel-sub">For adding one product at a time. For many products use Bulk Upload.</div>
+
+        <div class="card">
+          <div class="card-title">Basic Info</div>
+          <div class="form-row">
+            <div class="fg"><label>Product Name *</label><input id="f-name" type="text" placeholder="e.g. Aviator Classic"></div>
+            <div class="fg"><label>SKU (auto if blank)</label><input id="f-sku" type="text" placeholder="e.g. MD-MEN-TI-001"></div>
+          </div>
+          <div class="fg"><label>Short Description</label><input id="f-desc" type="text" placeholder="e.g. Lightweight titanium, slim profile"></div>
+          <div class="form-row3">
+            <div class="fg"><label>Category *</label><select id="f-cat"><option value="">Select…</option><option>men</option><option>women</option><option>kids</option><option>unisex</option></select></div>
+            <div class="fg"><label>Material *</label><select id="f-mat"><option value="">Select…</option><option>titanium</option><option>metal</option><option>acetate</option><option>tr</option></select></div>
+            <div class="fg"><label>Badge</label><select id="f-badge"><option value="">None</option><option>New</option><option>Sale</option><option>Best Seller</option></select></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Pricing & Stock</div>
+          <div class="form-row4">
+            <div class="fg"><label>Price (₹) *</label><input id="f-price" type="number" placeholder="2499"></div>
+            <div class="fg"><label>Original Price (₹)</label><input id="f-oldprice" type="number" placeholder="Leave blank = no sale"></div>
+            <div class="fg"><label>Total Stock *</label><input id="f-stock" type="number" placeholder="e.g. 50" min="0"></div>
+            <div class="fg"><label>Low Stock Alert At</label><input id="f-lowat" type="number" placeholder="5" min="1"></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Specifications</div>
+          <div class="form-row4">
+            <div class="fg"><label>Lens Width</label><input id="f-lens" placeholder="52mm"></div>
+            <div class="fg"><label>Bridge</label><input id="f-bridge" placeholder="18mm"></div>
+            <div class="fg"><label>Temple</label><input id="f-temple" placeholder="145mm"></div>
+            <div class="fg"><label>Weight</label><input id="f-weight" placeholder="12g"></div>
+          </div>
+          <div class="fg"><label>Lens Type</label><input id="f-lenstype" placeholder="Single Vision / Bifocal / Progressive"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Product Images</div>
+          <div id="f-img-grid" class="img-grid"></div>
+          <div class="img-upload-box" onclick="document.getElementById('f-img-input').click()" style="width:76px;height:76px">
+            <span>📷</span><span style="font-size:9px;letter-spacing:.5px">ADD</span>
+          </div>
+          <input type="file" id="f-img-input" accept="image/*" multiple style="display:none" onchange="handleImgs(this,'form')">
+          <div style="font-size:11px;color:var(--mid);margin-top:8px">First image = main display image. Click image to set as main.</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Colours Available</div>
+          <div id="f-chips" class="color-chips"></div>
+          <div class="add-color-row">
+            <div style="font-size:11px;color:var(--mid);white-space:nowrap">Add:</div>
+            <input type="color" id="f-chex" value="#c9a07a" class="color-hex-pick">
+            <input type="text" id="f-cname" class="color-name-inp" placeholder="Colour name e.g. Rose Gold" onkeydown="if(event.key==='Enter')addChip()">
+            <button class="btn btn-outline btn-sm" onclick="addChip()">+ Add</button>
+          </div>
+          <div class="preset-row" id="f-presets"></div>
+        </div>
+
+        <div class="flex">
+          <button class="btn btn-dark" onclick="saveProduct()" id="save-btn">Save Product</button>
+          <button class="btn btn-outline" onclick="clearForm()">Clear</button>
+          <button class="btn btn-outline" id="cancel-edit" style="display:none" onclick="cancelEdit()">Cancel Edit</button>
+        </div>
+      </div>
+
+      <!-- BULK UPLOAD -->
+      <div class="panel" id="panel-bulk">
+        <div class="panel-title">Bulk Upload CSV</div>
+        <div class="panel-sub">Upload hundreds of products at once using a spreadsheet.</div>
+
+        <div class="card">
+          <div class="card-title">Step 1 — Download the Template</div>
+          <div class="hint-box">
+            Fill this template in <strong>Excel or Google Sheets</strong>. Each row = one product. Colours go in separate columns (Color1Name, Color1Hex, Color2Name, Color2Hex… up to Color8). Leave cells blank if not needed.
+          </div>
+          <button class="btn btn-dark" onclick="downloadTemplate()">⬇ Download CSV Template</button>
+          <div style="margin-top:14px">
+            <div style="font-size:11px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Column Reference:</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:11px">
+              ${[
+                ['name*','Product name','Aviator Classic'],
+                ['sku','Unique ID (auto-gen if blank)','MD-MEN-TI-001'],
+                ['category*','men / women / kids / unisex','men'],
+                ['material*','titanium / metal / acetate / tr','titanium'],
+                ['price*','Number only, no ₹','2499'],
+                ['oldPrice','Original price (blank = no sale)','3200'],
+                ['badge','New / Sale / Best Seller (or blank)','New'],
+                ['stock*','Total units available','50'],
+                ['lowStockAt','Alert threshold (default 5)','5'],
+                ['description','Short description','Slim profile'],
+                ['lensWidth','e.g. 52mm','52mm'],
+                ['bridge','e.g. 18mm','18mm'],
+                ['temple','e.g. 145mm','145mm'],
+                ['weight','e.g. 12g','12g'],
+                ['lensType','Vision type','Single Vision'],
+                ['Color1Name','First colour name','Black'],
+                ['Color1Hex','First colour hex code','#1a1a1a'],
+                ['Color2Name … Color8Name','More colours','Rose Gold'],
+                ['Color2Hex … Color8Hex','Hex codes for each','#d4a0a0'],
+              ].map(([col,desc,ex])=>`<div style="background:var(--bg);padding:6px 8px;border:1px solid var(--border)"><div style="font-weight:500;color:var(--dark)">${col}</div><div style="color:var(--mid)">${desc}</div><div style="color:var(--accent);font-size:10px">e.g. ${ex}</div></div>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Step 2 — Upload Your CSV</div>
+          <div class="csv-zone" id="csv-zone" onclick="document.getElementById('csv-input').click()"
+            ondragover="event.preventDefault();this.classList.add('drag')"
+            ondragleave="this.classList.remove('drag')"
+            ondrop="event.preventDefault();this.classList.remove('drag');handleCSVDrop(event)">
+            <div class="csv-icon">📊</div>
+            <div class="csv-text">Click or drag & drop your CSV file here</div>
+            <div class="csv-sub">Supports .csv files exported from Excel or Google Sheets</div>
+          </div>
+          <input type="file" id="csv-input" accept=".csv" style="display:none" onchange="handleCSVFile(this)">
+        </div>
+
+        <div id="csv-preview-section" style="display:none">
+          <div class="card">
+            <div class="card-title">
+              Step 3 — Review & Import
+              <div class="flex" style="gap:8px">
+                <span id="csv-ok-count" style="font-size:12px;color:var(--green)"></span>
+                <span id="csv-err-count" style="font-size:12px;color:var(--red)"></span>
+              </div>
+            </div>
+            <div id="csv-progress-wrap" style="display:none">
+              <div style="font-size:12px;color:var(--mid);margin-bottom:4px" id="csv-progress-label">Importing…</div>
+              <div class="progress-bar-wrap"><div class="progress-bar" id="csv-progress-bar"></div></div>
+            </div>
+            <div class="csv-preview" id="csv-preview"></div>
+            <div class="flex" style="margin-top:14px">
+              <button class="btn btn-dark" onclick="importCSV()">✓ Import Valid Rows</button>
+              <button class="btn btn-outline" onclick="document.getElementById('csv-preview-section').style.display='none';csvRows=[]">Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Tips for Fast Bulk Uploading</div>
+          <ol class="step-list">
+            <li><div>Use hex colour codes from <strong>Google "colour picker"</strong> — just search "rose gold hex" and copy the # code.</div></li>
+            <li><div>If all products in a group share colours, copy-paste the colour columns down in Excel.</div></li>
+            <li><div>For the SKU, use a pattern like <strong>MD-MEN-TI-001</strong> (Brand-Category-Material-Number). Helps you find products fast later.</div></li>
+            <li><div>Set stock to <strong>999</strong> for "always available" products, or the actual count for limited items.</div></li>
+            <li><div>After importing, go to <strong>Stock & Sold Out</strong> to fine-tune per-colour availability.</div></li>
+          </ol>
+        </div>
+      </div>
+
+      <!-- STOCK MANAGER -->
+      <div class="panel" id="panel-stock">
+        <div class="panel-title">Stock & Sold Out</div>
+        <div class="panel-sub">Set stock levels per product and colour. Zero = sold out banner on your site.</div>
+        <div class="hint-box">
+          <strong>How it works:</strong> Set the stock number for each colour. When it hits 0, your live site shows "Sold Out" and prevents adding to cart. Below your low-stock threshold it shows a "Only X left" warning. Hit Save after changes.
+        </div>
+        <div class="filter-bar">
+          <input class="search-inp" id="ssearch" type="text" placeholder="Search products…" oninput="renderStock()">
+          <select class="filter-sel" id="sf-cat" onchange="renderStock()"><option value="">All Categories</option><option>men</option><option>women</option><option>kids</option><option>unisex</option></select>
+          <select class="filter-sel" id="sf-status" onchange="renderStock()">
+            <option value="">All Status</option>
+            <option value="out">Sold Out</option>
+            <option value="low">Low Stock</option>
+            <option value="in">In Stock</option>
+          </select>
+          <button class="btn btn-dark btn-sm ml-auto" onclick="saveStock()">Save All Stock</button>
+          <button class="btn btn-outline btn-sm" onclick="markAllInStock()">Mark All In Stock</button>
+        </div>
+        <div class="stock-grid" id="stock-grid"></div>
+        <div id="stock-empty" class="empty-state" style="display:none">
+          <div style="font-size:36px;margin-bottom:8px">📦</div>
+          No products found. Add products first.
+        </div>
+      </div>
+
+      <!-- HERO CAROUSEL -->
+      <div class="panel" id="panel-hero">
+        <div class="panel-title">Hero Carousel</div>
+        <div class="panel-sub">These slides rotate on your home page. Click an image to upload a real photo.</div>
+        <div class="card">
+          <div class="card-title">Carousel Slides</div>
+          <div id="hero-list"></div>
+          <button class="btn btn-outline btn-sm" style="margin-top:12px" onclick="addHeroSlide()">+ Add Slide</button>
+        </div>
+        <button class="btn btn-dark" onclick="saveHero()">Save Carousel</button>
+      </div>
+
+      <!-- STORE INFO -->
+      <div class="panel" id="panel-store">
+        <div class="panel-title">Store Information</div>
+        <div class="panel-sub">Update your contact details and display settings.</div>
+        <div class="card">
+          <div class="card-title">Store Details</div>
+          <div class="form-row">
+            <div class="fg"><label>Store Name</label><input id="s-name" value="Marché Designs"></div>
+            <div class="fg"><label>Tagline</label><input id="s-tagline" value="Premium handcrafted Italian spectacles"></div>
+          </div>
+          <div class="form-row">
+            <div class="fg"><label>Contact Email</label><input id="s-email" type="email" placeholder="your@email.com"></div>
+            <div class="fg"><label>WhatsApp / Phone</label><input id="s-phone" type="tel" placeholder="+91 98765 43210"></div>
+          </div>
+          <div class="fg"><label>Instagram</label><input id="s-insta" placeholder="@marchedesigns"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Shipping & Returns</div>
+          <div class="form-row">
+            <div class="fg"><label>Free Shipping Above (₹)</label><input id="s-freeship" type="number" value="2000"></div>
+            <div class="fg"><label>Return Window (days)</label><input id="s-returns" type="number" value="7"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Display Options</div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tn">Show sold-out banner</div><div class="td">Greys out sold-out products with a "Sold Out" label</div></div><label class="toggle"><input type="checkbox" id="t-soldout" checked><span class="tslider"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tn">Show "Only X left" warning</div><div class="td">Displays stock count when below low-stock threshold</div></div><label class="toggle"><input type="checkbox" id="t-lowwarn" checked><span class="tslider"></span></label></div>
+          <div class="toggle-row"><div class="toggle-info"><div class="tn">Show discount / original price</div><div class="td">Strikethrough original price when a sale price is set</div></div><label class="toggle"><input type="checkbox" id="t-discount" checked><span class="tslider"></span></label></div>
+        </div>
+        <button class="btn btn-dark" onclick="saveStore()">Save Store Info</button>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="panel" id="panel-settings">
+        <div class="panel-title">Settings</div>
+        <div class="panel-sub">Password, data backup, and push-to-GitHub guide.</div>
+        <div class="card">
+          <div class="card-title">Change Admin Password</div>
+          <div class="form-row3">
+            <div class="fg"><label>Current Password</label><input type="password" id="pw-cur"></div>
+            <div class="fg"><label>New Password</label><input type="password" id="pw-new" oninput="pwStrength(this.value)"><div class="pw-strength" id="pw-str"></div></div>
+            <div class="fg"><label>Confirm</label><input type="password" id="pw-cfm"></div>
+          </div>
+          <button class="btn btn-dark" onclick="changePw()">Update Password</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Data Backup</div>
+          <div class="flex">
+            <button class="btn btn-outline" onclick="exportJSON()">⬇ Export Backup (JSON)</button>
+            <button class="btn btn-outline" onclick="document.getElementById('import-json').click()">⬆ Restore Backup</button>
+            <button class="btn btn-red btn-sm" onclick="clearAll()">⚠ Clear All Data</button>
+          </div>
+          <input type="file" id="import-json" accept=".json" style="display:none" onchange="importJSON(this)">
+        </div>
+        <div class="card">
+          <div class="card-title">How to Push Your Changes to GitHub</div>
+          <ol class="step-list">
+            <li><div>Make all your edits here in the admin panel and click <strong>Save</strong>.</div></li>
+            <li><div>Open <strong>GitHub Desktop</strong> on your PC.</div></li>
+            <li><div>You'll see <strong>changed files</strong> listed on the left side.</div></li>
+            <li><div>Type a short note in the <strong>Summary</strong> box e.g. "Added 50 products".</div></li>
+            <li><div>Click <strong>"Commit to main"</strong> then <strong>"Push origin"</strong>.</div></li>
+            <li><div>Your live site at <strong>harshulkumar1.github.io</strong> updates in about 1 minute ✓</div></li>
+          </ol>
+        </div>
+      </div>
+
+    </div><!-- end main -->
+  </div><!-- end admin-body -->
+</div><!-- end admin-shell -->
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Edit Product</div>
+    <div class="modal-sub">Changes save immediately to your local data.</div>
+    <div class="form-row">
+      <div class="fg"><label>Name *</label><input id="m-name" type="text"></div>
+      <div class="fg"><label>SKU</label><input id="m-sku" type="text"></div>
+    </div>
+    <div class="fg"><label>Description</label><input id="m-desc" type="text"></div>
+    <div class="form-row3">
+      <div class="fg"><label>Category</label><select id="m-cat"><option>men</option><option>women</option><option>kids</option><option>unisex</option></select></div>
+      <div class="fg"><label>Material</label><select id="m-mat"><option>titanium</option><option>metal</option><option>acetate</option><option>tr</option></select></div>
+      <div class="fg"><label>Badge</label><select id="m-badge"><option value="">None</option><option>New</option><option>Sale</option><option>Best Seller</option></select></div>
+    </div>
+    <div class="form-row4">
+      <div class="fg"><label>Price (₹)</label><input id="m-price" type="number"></div>
+      <div class="fg"><label>Original Price (₹)</label><input id="m-oldprice" type="number"></div>
+      <div class="fg"><label>Stock</label><input id="m-stock" type="number"></div>
+      <div class="fg"><label>Low Stock At</label><input id="m-lowat" type="number"></div>
+    </div>
+    <div class="fg"><label>Colours</label>
+      <div id="m-chips" class="color-chips"></div>
+      <div class="add-color-row">
+        <input type="color" id="m-chex" value="#c9a07a" class="color-hex-pick">
+        <input type="text" id="m-cname" class="color-name-inp" placeholder="Colour name" onkeydown="if(event.key==='Enter')addModalChip()">
+        <button class="btn btn-outline btn-sm" onclick="addModalChip()">+ Add</button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-dark" onclick="saveModal()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════ AUTH ═══════════════════════════
+let adminPw = localStorage.getItem('mp')||'marche2025';
+function doLogin(){
+  const v=document.getElementById('login-pass').value;
+  if(v===adminPw){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('admin-shell').style.display='block';
+    loadData(); showPanel('dashboard');
+  } else {
+    document.getElementById('login-err').textContent='Wrong password. Default: marche2025';
+    document.getElementById('login-pass').value='';
+  }
+}
+function doLogout(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('admin-shell').style.display='none';
+  document.getElementById('login-pass').value='';
+  document.getElementById('login-err').textContent='';
+}
+function changePw(){
+  const cur=document.getElementById('pw-cur').value;
+  const nw=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-cfm').value;
+  if(cur!==adminPw){toast('Current password wrong','err');return;}
+  if(nw.length<6){toast('Min 6 characters','err');return;}
+  if(nw!==cf){toast('Passwords do not match','err');return;}
+  adminPw=nw; localStorage.setItem('mp',nw);
+  toast('Password updated!','ok');
+  ['pw-cur','pw-new','pw-cfm'].forEach(id=>document.getElementById(id).value='');
+}
+function pwStrength(v){
+  const el=document.getElementById('pw-str');
+  if(!v){el.textContent='';return;}
+  if(v.length<6){el.textContent='Weak';el.className='pw-strength pw-weak';}
+  else if(v.length<10){el.textContent='Okay';el.className='pw-strength pw-ok';}
+  else{el.textContent='Strong ✓';el.className='pw-strength pw-strong';}
+}
+
+// ═══════════════════════════ DATA ═══════════════════════════
+let products=[], heroSlides=[], stockData={};
+const PKEY='mp_products', HKEY='mp_hero', SKEY='mp_stock';
+
+function loadData(){
+  products=JSON.parse(localStorage.getItem(PKEY)||'[]');
+  heroSlides=JSON.parse(localStorage.getItem(HKEY)||JSON.stringify([
+    {id:1,name:'Aviator Pro',meta:'Men · Titanium',price:'₹2,800',img:null},
+    {id:2,name:'Cat Eye Slim',meta:'Women · Titanium',price:'₹2,950',img:null},
+    {id:3,name:'Round Tortoise',meta:'Unisex · Acetate',price:'₹2,350',img:null},
+    {id:4,name:'Flexi Kids',meta:'Kids · TR',price:'₹1,750',img:null},
+  ]));
+  stockData=JSON.parse(localStorage.getItem(SKEY)||'{}');
+  renderPresets();
+  updateDash();
+}
+function persist(){
+  localStorage.setItem(PKEY,JSON.stringify(products));
+  localStorage.setItem(HKEY,JSON.stringify(heroSlides));
+  localStorage.setItem(SKEY,JSON.stringify(stockData));
+  updateDash();
+}
+
+// ═══════════════════════════ PANELS ═══════════════════════════
+function showPanel(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  const nb=document.getElementById('nb-'+name);
+  if(nb) nb.classList.add('active');
+  if(name==='products') renderTable();
+  if(name==='stock') renderStock();
+  if(name==='hero') renderHero();
+  if(name==='dashboard') updateDash();
+}
+
+// ═══════════════════════════ DASHBOARD ═══════════════════════════
+function stockStatus(p){
+  const s=stockData[p.id];
+  if(s===undefined) return 'in';
+  if(s<=0) return 'out';
+  if(s<=(p.lowAt||5)) return 'low';
+  return 'in';
+}
+function updateDash(){
+  const total=products.length;
+  const inS=products.filter(p=>stockStatus(p)==='in').length;
+  const low=products.filter(p=>stockStatus(p)==='low').length;
+  const out=products.filter(p=>stockStatus(p)==='out').length;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-instock').textContent=inS;
+  document.getElementById('s-low').textContent=low;
+  document.getElementById('s-out').textContent=out;
+  document.getElementById('s-slides').textContent=heroSlides.length;
+  const badge=document.getElementById('lowstock-badge');
+  if(low+out>0){badge.textContent=low+out;badge.style.display='inline';}
+  else badge.style.display='none';
+}
+
+// ═══════════════════════════ PRODUCT TABLE ═══════════════════════════
+function renderTable(){
+  const q=(document.getElementById('psearch').value||'').toLowerCase();
+  const cat=document.getElementById('pf-cat').value;
+  const mat=document.getElementById('pf-mat').value;
+  const st=document.getElementById('pf-stock').value;
+  let list=products.filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q)&&!(p.sku||'').toLowerCase().includes(q)) return false;
+    if(cat&&p.cat!==cat) return false;
+    if(mat&&p.mat!==mat) return false;
+    if(st&&stockStatus(p)!==st) return false;
+    return true;
+  });
+  const tbody=document.getElementById('prod-tbody');
+  const empty=document.getElementById('prod-empty');
+  if(!list.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=list.map(p=>{
+    const ss=stockStatus(p);
+    const sv=stockData[p.id]??p.stock??'—';
+    return`<tr>
+      <td><div class="tbl-img">${p.images&&p.images[0]?`<img src="${p.images[0]}">`:`<span>${catIcon(p.cat)}</span>`}</div></td>
+      <td><div class="prod-name-cell">${p.name}<div class="prod-sku">${p.sku||''}</div></div></td>
+      <td style="text-transform:capitalize">${p.cat}</td>
+      <td style="text-transform:capitalize">${p.mat}</td>
+      <td>₹${Number(p.price).toLocaleString('en-IN')}${p.oldPrice?`<br><small style="color:var(--mid);text-decoration:line-through">₹${Number(p.oldPrice).toLocaleString('en-IN')}</small>`:''}</td>
+      <td><div class="color-pips">${(p.colors||[]).slice(0,6).map(c=>`<div class="pip" style="background:${c.hex}" title="${c.name}"></div>`).join('')}${(p.colors||[]).length>6?`<span style="font-size:10px;color:var(--mid)">+${p.colors.length-6}</span>`:''}</div></td>
+      <td><span class="stock-badge ${ss==='in'?'in-stock':ss==='low'?'low-stock':'out-stock'}">${ss==='in'?'In Stock':ss==='low'?`Low (${sv})`:ss==='out'?'Sold Out':'—'}</span></td>
+      <td><span class="tag ${p.badge==='New'?'tag-new':p.badge==='Sale'?'tag-sale':p.badge==='Best Seller'?'tag-best':'tag-none'}">${p.badge||'—'}</span></td>
+      <td><div class="tbl-actions">
+        <button class="act" onclick="openModal('${p.id}')">Edit</button>
+        <button class="act" onclick="dupProduct('${p.id}')">Dup</button>
+        <button class="act danger" onclick="delProduct('${p.id}')">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function delProduct(id){
+  if(!confirm('Delete this product?')) return;
+  products=products.filter(p=>p.id!==id);
+  delete stockData[id];
+  persist(); renderTable();
+  toast('Deleted','ok');
+}
+function dupProduct(id){
+  const p=products.find(x=>x.id===id);
+  if(!p) return;
+  const copy={...JSON.parse(JSON.stringify(p)),id:'p'+Date.now(),name:p.name+' (copy)',sku:''};
+  products.push(copy);
+  persist(); renderTable();
+  toast('Duplicated — edit it in the table','ok');
+}
+
+// ═══════════════════════════ ADD FORM ═══════════════════════════
+let formImgs=[],formColors=[],editingId=null;
+
+function handleImgs(input,target){
+  Array.from(input.files).forEach(file=>{
+    const r=new FileReader();
+    r.onload=e=>{
+      if(target==='form'){formImgs.push(e.target.result);renderFormImgs();}
+    };
+    r.readAsDataURL(file);
+  });
+  input.value='';
+}
+function renderFormImgs(){
+  const g=document.getElementById('f-img-grid');
+  g.innerHTML=formImgs.map((s,i)=>`
+    <div class="img-thumb" onclick="setMainImg(${i})" title="Click to set as main image">
+      <img src="${s}">
+      ${i===0?'<div class="img-main-label">MAIN</div>':''}
+      <button class="img-del" onclick="event.stopPropagation();removeImg(${i})">✕</button>
+    </div>
+  `).join('');
+}
+function setMainImg(i){ const img=formImgs.splice(i,1)[0]; formImgs.unshift(img); renderFormImgs(); }
+function removeImg(i){ formImgs.splice(i,1); renderFormImgs(); }
+
+const PRESETS=[
+  {name:'Black',hex:'#1a1a1a'},{name:'Silver',hex:'#c0c0c8'},{name:'Gold',hex:'#c9a07a'},
+  {name:'Rose Gold',hex:'#d4a0a0'},{name:'Gunmetal',hex:'#4a4a52'},{name:'Bronze',hex:'#8b6914'},
+  {name:'Tortoise',hex:'#7a4a1a'},{name:'Clear',hex:'#e8e0d8'},{name:'Havana',hex:'#5a2a0a'},
+  {name:'Navy',hex:'#1a2a4a'},{name:'Blue',hex:'#4a7ab4'},{name:'Pink',hex:'#e8a0b0'},
+  {name:'Red',hex:'#c04a4a'},{name:'Green',hex:'#4a8a4a'},{name:'Purple',hex:'#8a6aaa'},
+  {name:'Orange',hex:'#d4784a'},{name:'Teal',hex:'#2a7a7a'},{name:'Brown',hex:'#6b4226'},
+  {name:'Grey',hex:'#6a6a6a'},{name:'Blush',hex:'#f0c0b8'},{name:'Lilac',hex:'#c0a8d4'},
+  {name:'Mint',hex:'#a0d4b4'},{name:'Sand',hex:'#d4c0a0'},{name:'Olive',hex:'#7a8a4a'},
+];
+function renderPresets(){
+  const el=document.getElementById('f-presets');
+  if(!el) return;
+  el.innerHTML=PRESETS.map(c=>`
+    <button class="preset-btn" onclick="quickChip('${c.hex}','${c.name}')">
+      <span style="width:11px;height:11px;border-radius:50%;background:${c.hex};border:1px solid rgba(0,0,0,.1);flex-shrink:0"></span>${c.name}
+    </button>
+  `).join('');
+}
+function quickChip(hex,name){ if(!formColors.find(c=>c.name===name)){formColors.push({hex,name});renderChips();} }
+function addChip(){
+  const hex=document.getElementById('f-chex').value;
+  const name=document.getElementById('f-cname').value.trim();
+  if(!name){toast('Enter colour name','err');return;}
+  if(formColors.find(c=>c.name===name)){toast('Already added','warn');return;}
+  formColors.push({hex,name});
+  document.getElementById('f-cname').value='';
+  renderChips();
+}
+function removeChip(i){ formColors.splice(i,1); renderChips(); }
+function renderChips(){
+  document.getElementById('f-chips').innerHTML=formColors.map((c,i)=>`
+    <div class="chip"><span class="chip-swatch" style="background:${c.hex}"></span><span class="chip-name">${c.name}</span><button class="chip-del" onclick="removeChip(${i})">✕</button></div>
+  `).join('');
+}
+
+function saveProduct(){
+  const name=document.getElementById('f-name').value.trim();
+  const cat=document.getElementById('f-cat').value;
+  const mat=document.getElementById('f-mat').value;
+  const price=document.getElementById('f-price').value;
+  const stock=document.getElementById('f-stock').value;
+  if(!name||!cat||!mat||!price){toast('Name, Category, Material and Price are required','err');return;}
+  const id=editingId||'p'+Date.now();
+  const prod={
+    id,name,
+    sku:document.getElementById('f-sku').value.trim()||autoSKU(cat,mat),
+    desc:document.getElementById('f-desc').value.trim(),
+    cat,mat,
+    price:Number(price),
+    oldPrice:document.getElementById('f-oldprice').value?Number(document.getElementById('f-oldprice').value):null,
+    badge:document.getElementById('f-badge').value,
+    stock:Number(stock)||0,
+    lowAt:Number(document.getElementById('f-lowat').value)||5,
+    images:[...formImgs],
+    colors:[...formColors],
+    details:{
+      'Frame Material':mat.charAt(0).toUpperCase()+mat.slice(1),
+      'Lens Width':document.getElementById('f-lens').value||'52mm',
+      'Bridge':document.getElementById('f-bridge').value||'18mm',
+      'Temple':document.getElementById('f-temple').value||'145mm',
+      'Weight':document.getElementById('f-weight').value||(mat==='titanium'?'12g':mat==='tr'?'14g':'18g'),
+      'Lens Type':document.getElementById('f-lenstype').value||'Single Vision',
+      'Category':cat.charAt(0).toUpperCase()+cat.slice(1)
+    }
+  };
+  if(editingId){ const i=products.findIndex(p=>p.id===editingId); if(i>-1) products[i]=prod; }
+  else products.push(prod);
+  if(stock!=='') stockData[id]=Number(stock);
+  persist(); clearForm();
+  toast(editingId?'Product updated!':'Product added!','ok');
+  editingId=null;
+}
+function clearForm(){
+  ['f-name','f-sku','f-desc','f-price','f-oldprice','f-stock','f-lowat','f-lens','f-bridge','f-temple','f-weight','f-lenstype'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['f-cat','f-mat','f-badge'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  formImgs=[]; formColors=[]; renderFormImgs(); renderChips();
+  document.getElementById('add-title').textContent='Add Single Product';
+  document.getElementById('save-btn').textContent='Save Product';
+  document.getElementById('cancel-edit').style.display='none';
+  editingId=null;
+}
+function cancelEdit(){ clearForm(); showPanel('products'); }
+function autoSKU(cat,mat){ return `MD-${cat.toUpperCase().slice(0,3)}-${mat.toUpperCase().slice(0,2)}-${String(products.length+1).padStart(3,'0')}`; }
+
+// ═══════════════════════════ BULK CSV ═══════════════════════════
+let csvRows=[];
+const CSV_COLS=['name','sku','category','material','price','oldPrice','badge','stock','lowStockAt','description','lensWidth','bridge','temple','weight','lensType','Color1Name','Color1Hex','Color2Name','Color2Hex','Color3Name','Color3Hex','Color4Name','Color4Hex','Color5Name','Color5Hex','Color6Name','Color6Hex','Color7Name','Color7Hex','Color8Name','Color8Hex'];
+
+function downloadTemplate(){
+  const header=CSV_COLS.join(',');
+  const example=[
+    'Aviator Classic','MD-MEN-TI-001','men','titanium','2499','3200','New','50','5','Lightweight slim profile','52mm','18mm','145mm','12g','Single Vision','Black','#1a1a1a','Silver','#c0c0c8','Gold','#c9a07a','Rose Gold','#d4a0a0','','','','','','','',''
+  ].join(',');
+  const example2=[
+    'Cat Eye Slim','MD-WOM-TI-001','women','titanium','2950','','','100','5','Elegant cat eye frame','50mm','16mm','140mm','10g','Single Vision','Rose Gold','#d4a0a0','Gold','#c9a07a','Black','#1a1a1a','Lilac','#c0a8d4','Clear','#e8e0d8','','','','','','',''
+  ].join(',');
+  const csv=header+'\n'+example+'\n'+example2;
+  dlFile(csv,'marche-products-template.csv','text/csv');
+}
+
+function handleCSVDrop(e){
+  const file=e.dataTransfer.files[0];
+  if(file&&file.name.endsWith('.csv')) processCSV(file);
+}
+function handleCSVFile(input){
+  if(input.files[0]) processCSV(input.files[0]);
+  input.value='';
+}
+function processCSV(file){
+  const r=new FileReader();
+  r.onload=e=>{
+    const lines=e.target.result.split(/\r?\n/).filter(l=>l.trim());
+    const headers=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+    csvRows=[];
+    for(let i=1;i<lines.length;i++){
+      const vals=parseCSVLine(lines[i]);
+      const row={};
+      headers.forEach((h,j)=>row[h]=vals[j]||'');
+      const errors=[], warnings=[];
+      if(!row.name) errors.push('Name missing');
+      if(!row.category||!['men','women','kids','unisex'].includes(row.category.toLowerCase())) errors.push('Category must be: men/women/kids/unisex');
+      if(!row.material||!['titanium','metal','acetate','tr'].includes(row.material.toLowerCase())) errors.push('Material must be: titanium/metal/acetate/tr');
+      if(!row.price||isNaN(row.price)) errors.push('Price must be a number');
+      if(!row.stock) warnings.push('Stock not set — will default to 0');
+      if(!row.Color1Name) warnings.push('No colours set');
+      csvRows.push({row,errors,warnings});
+    }
+    renderCSVPreview();
+  };
+  r.readAsText(file);
+}
+function parseCSVLine(line){
+  const result=[]; let cur='',inQ=false;
+  for(let c of line){
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
+    else cur+=c;
+  }
+  result.push(cur.trim());
+  return result;
+}
+function renderCSVPreview(){
+  const ok=csvRows.filter(r=>!r.errors.length).length;
+  const err=csvRows.filter(r=>r.errors.length).length;
+  document.getElementById('csv-ok-count').textContent=`✓ ${ok} valid rows`;
+  document.getElementById('csv-err-count').textContent=err?`✕ ${err} rows with errors`:'';
+  const tbl=`<table class="tbl" style="font-size:12px">
+    <thead><tr><th>#</th><th>Name</th><th>Category</th><th>Material</th><th>Price</th><th>Stock</th><th>Colours</th><th>Status</th></tr></thead>
+    <tbody>${csvRows.map((r,i)=>{
+      const p=r.row;
+      const cls=r.errors.length?'preview-row-err':r.warnings.length?'preview-row-warn':'preview-row-ok';
+      const colours=[];
+      for(let n=1;n<=8;n++){if(p[`Color${n}Name`])colours.push(`<div class="pip" style="background:${p[`Color${n}Hex`]||'#ccc'}" title="${p[`Color${n}Name`]}"></div>`);}
+      return`<tr class="${cls}">
+        <td>${i+1}</td>
+        <td>${p.name||'—'}</td>
+        <td>${p.category||'—'}</td>
+        <td>${p.material||'—'}</td>
+        <td>${p.price?'₹'+Number(p.price).toLocaleString('en-IN'):'—'}</td>
+        <td>${p.stock||'0'}</td>
+        <td><div class="color-pips">${colours.join('')}</div></td>
+        <td>${r.errors.length?`<span class="err-cell">✕ ${r.errors.join('; ')}</span>`:r.warnings.length?`<span class="warn-cell">⚠ ${r.warnings.join('; ')}</span>`:`<span class="ok-cell">✓ Ready</span>`}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+  document.getElementById('csv-preview').innerHTML=tbl;
+  document.getElementById('csv-preview-section').style.display='block';
+}
+async function importCSV(){
+  const valid=csvRows.filter(r=>!r.errors.length);
+  if(!valid.length){toast('No valid rows to import','err');return;}
+  const prog=document.getElementById('csv-progress-bar');
+  const label=document.getElementById('csv-progress-label');
+  document.getElementById('csv-progress-wrap').style.display='block';
+  let added=0;
+  for(let i=0;i<valid.length;i++){
+    const p=valid[i].row;
+    const colors=[];
+    for(let n=1;n<=8;n++){
+      if(p[`Color${n}Name`]) colors.push({name:p[`Color${n}Name`],hex:p[`Color${n}Hex`]||'#888888'});
+    }
+    const id='p'+Date.now()+i;
+    const prod={
+      id,
+      name:p.name,
+      sku:p.sku||autoSKU(p.category.toLowerCase(),p.material.toLowerCase()),
+      desc:p.description||'',
+      cat:p.category.toLowerCase(),
+      mat:p.material.toLowerCase(),
+      price:Number(p.price),
+      oldPrice:p.oldPrice?Number(p.oldPrice):null,
+      badge:p.badge||'',
+      stock:Number(p.stock)||0,
+      lowAt:Number(p.lowStockAt)||5,
+      images:[],
+      colors,
+      details:{
+        'Frame Material':p.material.charAt(0).toUpperCase()+p.material.slice(1),
+        'Lens Width':p.lensWidth||'52mm',
+        'Bridge':p.bridge||'18mm',
+        'Temple':p.temple||'145mm',
+        'Weight':p.weight||(p.material==='titanium'?'12g':'18g'),
+        'Lens Type':p.lensType||'Single Vision',
+        'Category':p.category.charAt(0).toUpperCase()+p.category.slice(1)
+      }
+    };
+    products.push(prod);
+    stockData[id]=Number(p.stock)||0;
+    added++;
+    prog.style.width=Math.round((added/valid.length)*100)+'%';
+    label.textContent=`Importing ${added} of ${valid.length}…`;
+    await new Promise(r=>setTimeout(r,10));
+  }
+  persist();
+  document.getElementById('csv-progress-wrap').style.display='none';
+  document.getElementById('csv-preview-section').style.display='none';
+  csvRows=[];
+  toast(`✓ ${added} products imported successfully!`,'ok');
+  showPanel('products');
+}
+
+function exportCSV(){
+  if(!products.length){toast('No products to export','warn');return;}
+  const rows=[CSV_COLS.join(',')];
+  products.forEach(p=>{
+    const cols=[
+      p.name,p.sku||'',p.cat,p.mat,p.price,p.oldPrice||'',p.badge||'',
+      stockData[p.id]??p.stock??0,p.lowAt||5,p.desc||'',
+      p.details?.['Lens Width']||'',p.details?.['Bridge']||'',p.details?.['Temple']||'',
+      p.details?.['Weight']||'',p.details?.['Lens Type']||'',
+      ...[...Array(8)].flatMap((_,i)=>[p.colors?.[i]?.name||'',p.colors?.[i]?.hex||''])
+    ];
+    rows.push(cols.map(v=>typeof v==='string'&&v.includes(',')? `"${v}"`:v).join(','));
+  });
+  dlFile(rows.join('\n'),'marche-products-export.csv','text/csv');
+}
+
+// ═══════════════════════════ STOCK ═══════════════════════════
+function renderStock(){
+  const q=(document.getElementById('ssearch').value||'').toLowerCase();
+  const cat=document.getElementById('sf-cat').value;
+  const st=document.getElementById('sf-status').value;
+  let list=products.filter(p=>{
+    if(q&&!p.name.toLowerCase().includes(q)) return false;
+    if(cat&&p.cat!==cat) return false;
+    if(st){const ss=stockStatus(p);if(ss!==st) return false;}
+    return true;
+  });
+  const grid=document.getElementById('stock-grid');
+  const empty=document.getElementById('stock-empty');
+  if(!list.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=list.map(p=>{
+    const ss=stockStatus(p);
+    const sv=stockData[p.id]??p.stock??0;
+    const colors=p.colors||[];
+    return`<div class="stock-card">
+      <div class="stock-card-top">
+        <div class="stock-card-img">${p.images&&p.images[0]?`<img src="${p.images[0]}">`:`<span style="font-size:22px">${catIcon(p.cat)}</span>`}</div>
+        <div>
+          <div class="stock-card-name">${p.name}</div>
+          <div class="stock-card-meta">${p.cat} · ${p.mat}</div>
+          <span class="stock-badge ${ss==='in'?'in-stock':ss==='low'?'low-stock':'out-stock'}" style="margin-top:4px;display:inline-flex">${ss==='in'?'In Stock':ss==='low'?`Low Stock`:ss==='out'?'Sold Out':'—'}</span>
+        </div>
+      </div>
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:8px">Overall Stock</div>
+      <div class="stock-row" style="margin-bottom:10px">
+        <span style="font-size:12px;font-weight:500">Total Units</span>
+        <div style="display:flex;align-items:center;gap:6px">
+          <input class="stock-input" type="number" min="0" value="${sv}" id="stock-${p.id}" onchange="updateStock('${p.id}',this.value)">
+          <div class="stock-toggle">
+            <button onclick="setStockStatus('${p.id}','in')" class="${ss==='in'?'active-in':''}">In Stock</button>
+            <button onclick="setStockStatus('${p.id}','low')" class="${ss==='low'?'active-low':''}">Low</button>
+            <button onclick="setStockStatus('${p.id}','out')" class="${ss==='out'?'active-out':''}">Sold Out</button>
+          </div>
+        </div>
+      </div>
+      ${colors.length?`<div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:6px">Per Colour</div>
+      ${colors.map((c,ci)=>{
+        const ck=`${p.id}-c${ci}`;
+        const cv=stockData[ck]??sv;
+        const cs=cv<=0?'out':cv<=(p.lowAt||5)?'low':'in';
+        return`<div class="stock-row">
+          <div class="stock-color"><div class="pip" style="background:${c.hex}"></div>${c.name}</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input class="stock-input" type="number" min="0" value="${cv}" id="stock-${ck}" onchange="updateStock('${ck}',this.value)">
+            <span class="stock-badge ${cs==='in'?'in-stock':cs==='low'?'low-stock':'out-stock'}" style="font-size:9px">${cs==='in'?'✓':cs==='low'?'Low':'Out'}</span>
+          </div>
+        </div>`;
+      }).join('')}`:''}
+    </div>`;
+  }).join('');
+}
+function updateStock(key,val){
+  stockData[key]=Number(val);
+  persist();
+  // re-evaluate badge on sidebar
+  const low=products.filter(p=>stockStatus(p)==='low').length;
+  const out=products.filter(p=>stockStatus(p)==='out').length;
+  const badge=document.getElementById('lowstock-badge');
+  if(low+out>0){badge.textContent=low+out;badge.style.display='inline';}
+  else badge.style.display='none';
+}
+function setStockStatus(id,st){
+  if(st==='out') stockData[id]=0;
+  else if(st==='low'){ const p=products.find(x=>x.id===id); stockData[id]=(p?.lowAt||5)-1; }
+  else { const p=products.find(x=>x.id===id); stockData[id]=Math.max((p?.lowAt||5)+1,p?.stock||10); }
+  persist(); renderStock();
+}
+function saveStock(){ persist(); toast('Stock saved!','ok'); }
+function markAllInStock(){
+  products.forEach(p=>{ stockData[p.id]=Math.max((p.lowAt||5)+1,p.stock||10); });
+  persist(); renderStock();
+  toast('All marked as In Stock','ok');
+}
+
+// ═══════════════════════════ EDIT MODAL ═══════════════════════════
+let modalColors=[];
+function openModal(id){
+  const p=products.find(x=>x.id===id);
+  if(!p) return;
+  editingId=id;
+  modalColors=[...(p.colors||[])];
+  document.getElementById('m-name').value=p.name;
+  document.getElementById('m-sku').value=p.sku||'';
+  document.getElementById('m-desc').value=p.desc||'';
+  document.getElementById('m-cat').value=p.cat;
+  document.getElementById('m-mat').value=p.mat;
+  document.getElementById('m-badge').value=p.badge||'';
+  document.getElementById('m-price').value=p.price;
+  document.getElementById('m-oldprice').value=p.oldPrice||'';
+  document.getElementById('m-stock').value=stockData[id]??p.stock??0;
+  document.getElementById('m-lowat').value=p.lowAt||5;
+  renderModalChips();
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('edit-modal').classList.remove('open'); editingId=null; }
+function addModalChip(){
+  const hex=document.getElementById('m-chex').value;
+  const name=document.getElementById('m-cname').value.trim();
+  if(!name) return;
+  modalColors.push({hex,name});
+  document.getElementById('m-cname').value='';
+  renderModalChips();
+}
+function removeModalChip(i){ modalColors.splice(i,1); renderModalChips(); }
+function renderModalChips(){
+  document.getElementById('m-chips').innerHTML=modalColors.map((c,i)=>`
+    <div class="chip"><span class="chip-swatch" style="background:${c.hex}"></span><span class="chip-name">${c.name}</span><button class="chip-del" onclick="removeModalChip(${i})">✕</button></div>
+  `).join('');
+}
+function saveModal(){
+  const id=editingId;
+  const idx=products.findIndex(p=>p.id===id);
+  if(idx<0) return;
+  products[idx]={
+    ...products[idx],
+    name:document.getElementById('m-name').value.trim(),
+    sku:document.getElementById('m-sku').value.trim(),
+    desc:document.getElementById('m-desc').value.trim(),
+    cat:document.getElementById('m-cat').value,
+    mat:document.getElementById('m-mat').value,
+    badge:document.getElementById('m-badge').value,
+    price:Number(document.getElementById('m-price').value),
+    oldPrice:document.getElementById('m-oldprice').value?Number(document.getElementById('m-oldprice').value):null,
+    lowAt:Number(document.getElementById('m-lowat').value)||5,
+    colors:[...modalColors],
+  };
+  const st=document.getElementById('m-stock').value;
+  if(st!=='') stockData[id]=Number(st);
+  persist(); closeModal(); renderTable();
+  toast('Updated!','ok');
+}
+
+// ═══════════════════════════ HERO ═══════════════════════════
+function renderHero(){
+  document.getElementById('hero-list').innerHTML=heroSlides.map(s=>`
+    <div style="display:flex;gap:14px;align-items:center;padding:12px;background:var(--bg);border:1px solid var(--border);margin-bottom:8px">
+      <div style="width:56px;height:56px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;overflow:hidden;flex-shrink:0" onclick="document.getElementById('hs-file-${s.id}').click()" title="Click to upload image">
+        ${s.img?`<img src="${s.img}" style="width:100%;height:100%;object-fit:cover">`:`<span>📷</span>`}
+      </div>
+      <input type="file" id="hs-file-${s.id}" accept="image/*" style="display:none" onchange="handleSlideImg(this,${s.id})">
+      <input style="flex:2;border:1px solid var(--border);background:var(--white);padding:7px 10px;font-size:12px" value="${s.name}" id="hs-name-${s.id}" placeholder="Product name">
+      <input style="flex:2;border:1px solid var(--border);background:var(--white);padding:7px 10px;font-size:12px" value="${s.meta}" id="hs-meta-${s.id}" placeholder="e.g. Men · Titanium">
+      <input style="flex:1;border:1px solid var(--border);background:var(--white);padding:7px 10px;font-size:12px" value="${s.price}" id="hs-price-${s.id}" placeholder="₹2,800">
+      <button class="btn btn-outline btn-sm" onclick="removeSlide(${s.id})">Remove</button>
+    </div>
+  `).join('');
+}
+function handleSlideImg(input,id){
+  const file=input.files[0];if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{const s=heroSlides.find(x=>x.id===id);if(s){s.img=e.target.result;renderHero();}};
+  r.readAsDataURL(file);input.value='';
+}
+function addHeroSlide(){ const id=Math.max(0,...heroSlides.map(s=>s.id))+1; heroSlides.push({id,name:'New Product',meta:'Category · Material',price:'₹0',img:null}); renderHero(); }
+function removeSlide(id){ heroSlides=heroSlides.filter(s=>s.id!==id); renderHero(); }
+function saveHero(){
+  heroSlides.forEach(s=>{
+    const n=document.getElementById('hs-name-'+s.id);
+    const m=document.getElementById('hs-meta-'+s.id);
+    const p=document.getElementById('hs-price-'+s.id);
+    if(n) s.name=n.value;if(m) s.meta=m.value;if(p) s.price=p.value;
+  });
+  persist(); toast('Carousel saved!','ok');
+}
+
+// ═══════════════════════════ STORE ═══════════════════════════
+function saveStore(){
+  const info={
+    name:document.getElementById('s-name').value,
+    tagline:document.getElementById('s-tagline').value,
+    email:document.getElementById('s-email').value,
+    phone:document.getElementById('s-phone').value,
+    insta:document.getElementById('s-insta').value,
+    freeship:document.getElementById('s-freeship').value,
+    returns:document.getElementById('s-returns').value,
+  };
+  localStorage.setItem('mp_store',JSON.stringify(info));
+  toast('Store info saved!','ok');
+}
+
+// ═══════════════════════════ DATA BACKUP ═══════════════════════════
+function exportJSON(){
+  dlFile(JSON.stringify({products,heroSlides,stockData},null,2),'marche-backup-'+Date.now()+'.json','application/json');
+  toast('Backup exported!','ok');
+}
+function importJSON(input){
+  const file=input.files[0];if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.products) products=d.products;
+      if(d.heroSlides) heroSlides=d.heroSlides;
+      if(d.stockData) stockData=d.stockData;
+      persist(); renderTable(); toast('Backup restored!','ok');
+    }catch(err){toast('Invalid file','err');}
+  };
+  r.readAsText(file);input.value='';
+}
+function clearAll(){
+  if(!confirm('Delete ALL products and stock data? This cannot be undone.')) return;
+  products=[];stockData={};persist();renderTable();
+  toast('All data cleared','warn');
+}
+
+// ═══════════════════════════ HELPERS ═══════════════════════════
+function catIcon(cat){return{men:'🕶',women:'✨',kids:'🌈',unisex:'👓'}[cat]||'👓';}
+function dlFile(content,filename,type){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([content],{type}));
+  a.download=filename;a.click();
+}
+function toast(msg,type='info'){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className=`toast ${type}`;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer=setTimeout(()=>t.classList.remove('show'),3200);
+}
+</script>
+</body>
+</html>
