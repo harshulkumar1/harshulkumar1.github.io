@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marché Designs — Premium Italian Frames</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#fdf6f0;--white:#fff;--dark:#2a1f1a;--mid:#7a6a60;--border:#e8ddd4;
+  --peach:#f5ede3;--mauve:#ede3ee;--sage:#e3edf5;--mint:#e3f0e8;
+  --accent:#c9a07a;--accent-dark:#a8783a;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);font-size:15px;overflow-x:hidden}
+a,button{cursor:pointer}
+button{font-family:'DM Sans',sans-serif}
+.hidden{display:none!important}
+.page{display:none}
+.page.active{display:block}
+
+/* ── NAV ── */
+nav{background:var(--white);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:300;padding:0 40px}
+.nav-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:62px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;letter-spacing:4px;text-transform:uppercase;color:var(--dark);cursor:pointer}
+.nav-links{display:flex;list-style:none}
+.nav-item{position:relative}
+.nav-item>a{display:block;padding:0 16px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid);line-height:62px;transition:color .2s;text-decoration:none}
+.nav-item>a:hover{color:var(--dark)}
+.dropdown{position:absolute;top:62px;left:0;background:var(--white);border:1px solid var(--border);min-width:160px;display:none;z-index:400;padding:6px 0;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.nav-item:hover .dropdown{display:block}
+.dropdown a{display:block;padding:10px 18px;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);transition:all .2s;text-decoration:none}
+.dropdown a:hover{background:var(--peach);color:var(--dark)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.cart-btn{background:var(--dark);color:var(--white);border:none;padding:9px 20px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;display:flex;align-items:center;gap:8px;transition:background .2s}
+.cart-btn:hover{background:#4a3830}
+.cart-num{background:var(--accent);color:var(--dark);border-radius:50%;width:18px;height:18px;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:500}
+.breadcrumb{max-width:1300px;margin:0 auto;padding:12px 40px;font-size:12px;color:var(--mid);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.breadcrumb span{color:var(--border)}
+.breadcrumb a{color:var(--mid);text-decoration:none;cursor:pointer;transition:color .2s}
+.breadcrumb a:hover{color:var(--dark)}
+
+/* ── BUTTONS ── */
+.btn{border:none;padding:13px 32px;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-family:'DM Sans',sans-serif;transition:all .2s;cursor:pointer}
+.btn-dark{background:var(--dark);color:var(--white)}.btn-dark:hover{background:#3a2a22}
+.btn-outline{background:transparent;border:2px solid var(--dark);color:var(--dark)}.btn-outline:hover{background:var(--dark);color:var(--white)}
+.btn-outline-light{background:transparent;border:2px solid rgba(255,255,255,.6);color:var(--white)}.btn-outline-light:hover{background:var(--white);color:var(--dark)}
+.btn-accent{background:var(--accent);color:var(--dark);border:none}.btn-accent:hover{background:var(--accent-dark);color:var(--white)}
+
+/* ── HERO ── */
+.hero{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
+.hero-left{background:var(--peach);padding:72px 56px;display:flex;flex-direction:column;justify-content:center}
+.hero-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.hero-h1{font-family:'Cormorant Garamond',serif;font-size:60px;font-weight:300;line-height:1.05;color:var(--dark);margin-bottom:18px}
+.hero-h1 em{font-style:italic;color:var(--mid)}
+.hero-p{font-size:14px;color:var(--mid);line-height:1.9;max-width:380px;margin-bottom:36px}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.hero-right{position:relative;overflow:hidden;background:var(--peach)}
+.c-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.c-slide{min-width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:40px;cursor:pointer;transition:opacity .2s}
+.c-slide:hover{opacity:.92}
+.c-slide-img{width:210px;height:210px;display:flex;align-items:center;justify-content:center;font-size:90px;background:rgba(255,255,255,.5);border-radius:4px;overflow:hidden}
+.c-slide-img img{width:100%;height:100%;object-fit:cover;border-radius:4px}
+.c-slide-name{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--dark)}
+.c-slide-meta{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--mid)}
+.c-slide-price{font-size:16px;font-weight:500;color:var(--dark)}
+.c-slide-cta{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-top:4px}
+.c-arrow{position:absolute;top:50%;transform:translateY(-50%);background:var(--white);border:none;width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--dark);z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.12);transition:all .2s}
+.c-arrow:hover{background:var(--dark);color:var(--white)}
+.c-prev{left:14px}.c-next{right:14px}
+.c-dots{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.c-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);border:none;opacity:.35;padding:0;transition:all .2s;cursor:pointer}
+.c-dot.on{opacity:1;width:20px;border-radius:3px}
+
+/* ── FEATURE STRIP ── */
+.strip{background:var(--dark);display:grid;grid-template-columns:repeat(4,1fr)}
+.strip-item{padding:22px 20px;text-align:center;border-right:1px solid rgba(253,246,240,.1)}
+.strip-item:last-child{border:none}
+.strip-icon{font-size:20px;margin-bottom:6px}
+.strip-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--white);font-weight:500;margin-bottom:2px}
+.strip-desc{font-size:11px;color:var(--accent)}
+
+/* ── HOME CATEGORY CARDS ── */
+.home-cats{padding:72px 40px}
+.home-cats-inner{max-width:1300px;margin:0 auto}
+.section-eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:10px}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:40px;font-weight:300;text-align:center;margin-bottom:40px;color:var(--dark)}
+.cat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.cat-card{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:.75}
+.cat-card-bg{position:absolute;inset:0;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+.cat-card:hover .cat-card-bg{transform:scale(1.06)}
+.cat-card-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:32px 28px;transition:all .3s}
+.cat-card-label{font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;font-weight:400}
+.cat-card-title{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;line-height:1.1;margin-bottom:12px}
+.cat-card-sub{font-size:12px;letter-spacing:.5px;margin-bottom:20px;opacity:.8}
+.cat-card-cta{display:inline-block;font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:10px 22px;border:1px solid;transition:all .2s;width:fit-content}
+
+/* MEN card — dark/bold */
+.cat-men .cat-card-bg{background:linear-gradient(160deg,#1a1a22 0%,#2a1f1a 40%,#3a2a20 100%)}
+.cat-men .cat-card-overlay{background:linear-gradient(to top,rgba(10,8,6,.9) 0%,rgba(10,8,6,.3) 60%,transparent 100%)}
+.cat-men .cat-card-label{color:var(--accent)}
+.cat-men .cat-card-title{color:var(--white)}
+.cat-men .cat-card-sub{color:rgba(255,255,255,.7)}
+.cat-men .cat-card-cta{color:var(--white);border-color:rgba(255,255,255,.5)}
+.cat-men .cat-card-cta:hover{background:var(--white);color:var(--dark)}
+.cat-men .cat-icon{position:absolute;top:28px;right:28px;font-size:52px;opacity:.18}
+
+/* WOMEN card — soft/elegant */
+.cat-women .cat-card-bg{background:linear-gradient(160deg,#f5e8f0 0%,#e8d4e4 40%,#d4bedd 100%)}
+.cat-women .cat-card-overlay{background:linear-gradient(to top,rgba(80,40,70,.75) 0%,rgba(80,40,70,.15) 60%,transparent 100%)}
+.cat-women .cat-card-label{color:#e8c0d4}
+.cat-women .cat-card-title{color:var(--white)}
+.cat-women .cat-card-sub{color:rgba(255,255,255,.75)}
+.cat-women .cat-card-cta{color:var(--white);border-color:rgba(255,255,255,.5)}
+.cat-women .cat-card-cta:hover{background:var(--white);color:#4a2040}
+.cat-women .cat-icon{position:absolute;top:28px;right:28px;font-size:52px;opacity:.2}
+
+/* KIDS card — bright/colorful */
+.cat-kids .cat-card-bg{background:linear-gradient(135deg,#f9d84a 0%,#f97b3a 30%,#e84caa 65%,#6b48d4 100%)}
+.cat-kids .cat-card-overlay{background:linear-gradient(to top,rgba(30,10,50,.8) 0%,rgba(30,10,50,.2) 55%,transparent 100%)}
+.cat-kids .cat-card-label{color:#ffeb80}
+.cat-kids .cat-card-title{color:var(--white)}
+.cat-kids .cat-card-sub{color:rgba(255,255,255,.8)}
+.cat-kids .cat-card-cta{color:var(--white);border-color:rgba(255,255,255,.6)}
+.cat-kids .cat-card-cta:hover{background:var(--white);color:#3a0860}
+.cat-kids .cat-icon{position:absolute;top:28px;right:28px;font-size:52px;opacity:.25}
+
+/* UNISEX card — clean/architectural */
+.cat-unisex .cat-card-bg{background:linear-gradient(160deg,#e8e4de 0%,#d4cec6 40%,#c0b8ae 100%)}
+.cat-unisex .cat-card-overlay{background:linear-gradient(to top,rgba(30,26,22,.85) 0%,rgba(30,26,22,.2) 60%,transparent 100%)}
+.cat-unisex .cat-card-label{color:#c8c0b4}
+.cat-unisex .cat-card-title{color:var(--white)}
+.cat-unisex .cat-card-sub{color:rgba(255,255,255,.75)}
+.cat-unisex .cat-card-cta{color:var(--white);border-color:rgba(255,255,255,.5)}
+.cat-unisex .cat-card-cta:hover{background:var(--white);color:var(--dark)}
+.cat-unisex .cat-icon{position:absolute;top:28px;right:28px;font-size:52px;opacity:.15}
+
+/* ── CATEGORY LANDING PAGES ── */
+/* MEN — dark bold */
+.cat-hero-men{min-height:420px;background:linear-gradient(135deg,#0e0c0a 0%,#1a1510 50%,#2a1f14 100%);display:flex;align-items:center;padding:0 80px;position:relative;overflow:hidden}
+.cat-hero-men::before{content:'';position:absolute;right:-60px;top:-60px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(201,160,122,.12) 0%,transparent 70%)}
+.cat-hero-men::after{content:'MEN';position:absolute;right:60px;bottom:-20px;font-family:'Bebas Neue',sans-serif;font-size:260px;color:rgba(255,255,255,.03);line-height:1;letter-spacing:-4px}
+.cat-men-content .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:14px}
+.cat-men-content h1{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--white);line-height:1;margin-bottom:16px}
+.cat-men-content p{font-size:14px;color:rgba(255,255,255,.55);max-width:400px;line-height:1.8;margin-bottom:32px}
+
+/* WOMEN — soft elegant */
+.cat-hero-women{min-height:420px;background:linear-gradient(135deg,#f5e8f0 0%,#ede0ea 50%,#e0ccda 100%);display:flex;align-items:center;padding:0 80px;position:relative;overflow:hidden}
+.cat-hero-women::before{content:'';position:absolute;right:-80px;top:-80px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(180,120,160,.18) 0%,transparent 70%)}
+.cat-hero-women::after{content:'WOMEN';position:absolute;right:40px;bottom:-20px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:rgba(120,60,100,.06);line-height:1;letter-spacing:-2px}
+.cat-women-content .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#9a5080;margin-bottom:14px}
+.cat-women-content h1{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:#3a1a30;line-height:1;margin-bottom:16px}
+.cat-women-content h1 em{font-style:italic;color:#9a5080}
+.cat-women-content p{font-size:14px;color:#7a5068;max-width:400px;line-height:1.8;margin-bottom:32px}
+
+/* KIDS — bright colorful */
+.cat-hero-kids{min-height:420px;background:linear-gradient(135deg,#fff3c4 0%,#ffe0a0 30%,#ffc8d0 65%,#e8d0ff 100%);display:flex;align-items:center;padding:0 80px;position:relative;overflow:hidden}
+.cat-hero-kids::after{content:'KIDS';position:absolute;right:40px;bottom:-20px;font-family:'Bebas Neue',sans-serif;font-size:220px;color:rgba(120,60,200,.07);line-height:1}
+.cat-kids-content .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#d04080;margin-bottom:14px}
+.cat-kids-content h1{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:#2a1040;line-height:1;margin-bottom:16px}
+.cat-kids-content h1 em{font-style:italic;color:#d04080}
+.cat-kids-content p{font-size:14px;color:#5a3060;max-width:400px;line-height:1.8;margin-bottom:32px}
+
+/* UNISEX — clean minimal */
+.cat-hero-unisex{min-height:420px;background:linear-gradient(135deg,#f0ece6 0%,#e4ded6 50%,#d8d0c6 100%);display:flex;align-items:center;padding:0 80px;position:relative;overflow:hidden}
+.cat-hero-unisex::after{content:'ALL';position:absolute;right:40px;bottom:-20px;font-family:'Bebas Neue',sans-serif;font-size:240px;color:rgba(42,31,26,.05);line-height:1}
+.cat-unisex-content .eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#8a7060;margin-bottom:14px}
+.cat-unisex-content h1{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;color:var(--dark);line-height:1;margin-bottom:16px}
+.cat-unisex-content p{font-size:14px;color:var(--mid);max-width:400px;line-height:1.8;margin-bottom:32px}
+
+/* ── MATERIAL SELECTOR ── */
+.mat-selector{padding:52px 80px}
+.mat-selector-inner{max-width:1300px;margin:0 auto}
+.mat-selector-title{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--mid);margin-bottom:24px}
+.mat-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.mat-card{border:1px solid var(--border);padding:32px 24px;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;background:var(--white)}
+.mat-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;transition:all .3s}
+.mat-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.1)}
+.mat-card-icon{font-size:32px;margin-bottom:16px}
+.mat-card-name{font-size:13px;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.mat-card-desc{font-size:12px;color:var(--mid);line-height:1.6;margin-bottom:16px}
+.mat-card-cta{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent)}
+/* Material card themes per category */
+.men-mat .mat-card{background:#faf9f8;border-color:#d0c8c0}
+.men-mat .mat-card:hover{background:#1a1510;border-color:#1a1510}
+.men-mat .mat-card:hover .mat-card-name,.men-mat .mat-card:hover .mat-card-desc,.men-mat .mat-card:hover .mat-card-cta{color:rgba(255,255,255,.8)}
+.men-mat .mat-card:hover .mat-card-icon{filter:grayscale(1) brightness(2)}
+.men-mat .mat-card::before{background:var(--dark)}
+.women-mat .mat-card{background:#fdf8fc;border-color:#e4d4e0}
+.women-mat .mat-card:hover{background:#3a1a30;border-color:#3a1a30}
+.women-mat .mat-card:hover .mat-card-name,.women-mat .mat-card:hover .mat-card-desc,.women-mat .mat-card:hover .mat-card-cta{color:rgba(255,255,255,.8)}
+.women-mat .mat-card::before{background:#9a5080}
+.kids-mat .mat-card{background:#fffdf8;border-color:#f0e0c0}
+.kids-mat .mat-card:hover{background:#2a1040;border-color:#2a1040}
+.kids-mat .mat-card:hover .mat-card-name,.kids-mat .mat-card:hover .mat-card-desc,.kids-mat .mat-card:hover .mat-card-cta{color:rgba(255,255,255,.8)}
+.kids-mat .mat-card::before{background:#d04080}
+.unisex-mat .mat-card{background:#f9f8f6;border-color:#d8d0c8}
+.unisex-mat .mat-card:hover{background:#2a1f1a;border-color:#2a1f1a}
+.unisex-mat .mat-card:hover .mat-card-name,.unisex-mat .mat-card:hover .mat-card-desc,.unisex-mat .mat-card:hover .mat-card-cta{color:rgba(255,255,255,.8)}
+.unisex-mat .mat-card::before{background:#8a7060}
+
+/* ── PRODUCT LIST PAGE ── */
+.prodlist-hero{padding:40px 80px 0}
+.prodlist-hero-inner{max-width:1300px;margin:0 auto;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.prodlist-top{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.prodlist-title{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;line-height:1}
+.prodlist-meta{font-size:13px;color:var(--mid);margin-top:6px}
+.prodlist-sort{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--mid)}
+.prodlist-sort select{border:1px solid var(--border);background:var(--white);padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--dark);outline:none}
+.prodlist-body{max-width:1300px;margin:0 auto;padding:32px 80px 60px}
+.p-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.p-card{background:var(--white);border:1px solid var(--border);overflow:hidden;transition:border-color .2s}
+.p-card:hover{border-color:var(--dark)}
+.p-card-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;background:var(--peach)}
+.p-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.p-card:hover .p-card-img img{transform:scale(1.04)}
+.p-card-icon{font-size:72px;transition:transform .3s}
+.p-card:hover .p-card-icon{transform:scale(1.08)}
+.p-badge{position:absolute;top:10px;left:10px;background:var(--dark);color:var(--white);font-size:10px;letter-spacing:1px;padding:4px 10px;text-transform:uppercase;z-index:2}
+.p-badge.sale{background:#8a2a00}
+.p-badge.bestseller{background:var(--accent);color:var(--dark)}
+.p-soldout-overlay{position:absolute;inset:0;background:rgba(42,31,26,.5);display:flex;align-items:center;justify-content:center;z-index:3}
+.p-soldout-label{background:var(--dark);color:var(--white);padding:7px 18px;font-size:10px;letter-spacing:2px;text-transform:uppercase}
+.p-card-body{padding:16px}
+.p-card-name{font-size:14px;font-weight:500;margin-bottom:3px;cursor:pointer;transition:color .2s}
+.p-card-name:hover{color:var(--accent-dark)}
+.p-card-meta{font-size:11px;color:var(--mid);margin-bottom:10px;letter-spacing:.3px}
+.p-colors{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.p-color-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.1)}
+.p-prices{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.p-price{font-size:15px;font-weight:500}
+.p-old{font-size:13px;color:var(--mid);text-decoration:line-through}
+.p-lowstock{font-size:11px;color:#b86a00;margin-bottom:6px;font-weight:500}
+.p-add{width:100%;padding:10px;background:var(--dark);color:var(--white);border:none;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;transition:all .2s}
+.p-add:hover{background:#4a3830}
+.p-add:disabled{background:#bbb;cursor:not-allowed}
+
+/* ── SHOP ALL ── */
+.shopall-hero{background:var(--dark);padding:52px 80px;position:relative;overflow:hidden}
+.shopall-hero::after{content:'SHOP ALL';position:absolute;right:40px;bottom:-30px;font-family:'Bebas Neue',sans-serif;font-size:160px;color:rgba(255,255,255,.03);line-height:1;white-space:nowrap}
+.shopall-hero h1{font-family:'Cormorant Garamond',serif;font-size:56px;font-weight:300;color:var(--white);max-width:1300px;margin:0 auto;position:relative}
+.shopall-hero p{font-size:13px;color:rgba(255,255,255,.5);max-width:1300px;margin:8px auto 0;position:relative}
+.shopall-body{max-width:1300px;margin:0 auto;padding:32px 80px 60px;display:grid;grid-template-columns:240px 1fr;gap:40px}
+.filter-panel{position:sticky;top:80px;height:fit-content}
+.filter-section{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.filter-section:last-child{border:none}
+.filter-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px;font-weight:500}
+.filter-opts{display:flex;flex-direction:column;gap:8px}
+.filter-opt{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--mid);cursor:pointer;padding:5px 0;transition:color .2s}
+.filter-opt:hover{color:var(--dark)}
+.filter-opt input[type=checkbox]{width:15px;height:15px;accent-color:var(--dark);cursor:pointer}
+.filter-opt.active{color:var(--dark);font-weight:500}
+.price-range{display:flex;flex-direction:column;gap:10px}
+.price-range input[type=range]{width:100%;accent-color:var(--dark)}
+.price-labels{display:flex;justify-content:space-between;font-size:12px;color:var(--mid)}
+.filter-clear{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--accent-dark);background:none;border:none;cursor:pointer;padding:0;margin-top:4px;text-decoration:underline}
+.shopall-results{min-height:400px}
+.shopall-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.shopall-count{font-size:13px;color:var(--mid)}
+.shopall-sort select{border:1px solid var(--border);background:var(--white);padding:8px 12px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--dark);outline:none}
+.active-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filter-tag{display:flex;align-items:center;gap:6px;background:var(--dark);color:var(--white);padding:4px 12px;font-size:11px;letter-spacing:.5px}
+.filter-tag button{background:none;border:none;color:rgba(255,255,255,.7);font-size:14px;line-height:1;padding:0;cursor:pointer}
+.filter-tag button:hover{color:var(--white)}
+
+/* ── PRODUCT DETAIL ── */
+.pd-wrap{max-width:1300px;margin:0 auto;padding:40px 80px 60px;display:grid;grid-template-columns:1fr 1fr;gap:64px}
+.pd-gallery{}
+.pd-main{aspect-ratio:1;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:120px;overflow:hidden;margin-bottom:12px}
+.pd-main img{width:100%;height:100%;object-fit:cover}
+.pd-thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.pd-thumb{width:70px;height:70px;background:var(--peach);border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;overflow:hidden;transition:border-color .2s}
+.pd-thumb.active{border-color:var(--dark)}
+.pd-thumb img{width:100%;height:100%;object-fit:cover}
+.pd-info{padding-top:4px}
+.pd-mat-tag{display:inline-block;background:var(--peach);color:var(--accent-dark);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;margin-bottom:16px}
+.pd-name{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;line-height:1.1;margin-bottom:8px}
+.pd-meta-text{font-size:13px;color:var(--mid);margin-bottom:22px}
+.pd-price-row{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.pd-price{font-size:30px;font-weight:500}
+.pd-old{font-size:18px;color:var(--mid);text-decoration:line-through}
+.pd-save{background:#e8f5e3;color:#2a6a0a;font-size:12px;padding:4px 12px;font-weight:500}
+.pd-section-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:12px}
+.pd-color-opts{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.pd-color-opt{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer}
+.pd-swatch{width:36px;height:36px;border-radius:50%;border:2px solid transparent;transition:border-color .2s}
+.pd-color-opt.active .pd-swatch{border-color:var(--dark)}
+.pd-color-opt span{font-size:10px;color:var(--mid)}
+.pd-qty-row{display:flex;align-items:center;margin-bottom:28px;border:1px solid var(--border);width:fit-content}
+.pd-qty-btn{width:42px;height:44px;background:var(--white);border:none;font-size:20px;color:var(--dark);transition:background .2s}
+.pd-qty-btn:hover{background:var(--peach)}
+.pd-qty-val{width:52px;height:44px;border:none;border-left:1px solid var(--border);border-right:1px solid var(--border);text-align:center;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;background:var(--white)}
+.pd-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.pd-cart-btn{padding:15px;background:var(--white);border:1px solid var(--dark);color:var(--dark);font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;transition:all .2s;cursor:pointer}
+.pd-cart-btn:hover{background:var(--dark);color:var(--white)}
+.pd-buy-btn{padding:15px;background:var(--dark);color:var(--white);border:none;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;transition:background .2s;cursor:pointer}
+.pd-buy-btn:hover{background:#4a3830}
+.pd-cart-btn:disabled,.pd-buy-btn:disabled{background:#ccc;border-color:#ccc;color:#888;cursor:not-allowed}
+.pd-spec-table{border-top:1px solid var(--border);padding-top:20px}
+.pd-spec-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.pd-spec-row span:first-child{color:var(--mid)}
+
+/* ── CART SIDEBAR ── */
+.cart-overlay{position:fixed;inset:0;background:rgba(42,31,26,.4);z-index:500;opacity:0;pointer-events:none;transition:opacity .3s}
+.cart-overlay.open{opacity:1;pointer-events:all}
+.cart-sidebar{position:fixed;right:0;top:0;bottom:0;width:420px;background:var(--white);z-index:501;transform:translateX(100%);transition:transform .3s;display:flex;flex-direction:column;max-width:100vw}
+.cart-sidebar.open{transform:translateX(0)}
+.cart-head{padding:22px 28px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.cart-head h3{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:400}
+.cart-close{background:none;border:none;font-size:22px;color:var(--mid);cursor:pointer}
+.cart-body{flex:1;overflow-y:auto;padding:20px 28px}
+.cart-empty{text-align:center;padding:60px 0;color:var(--mid)}
+.c-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}
+.c-item-img{width:72px;height:72px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0;overflow:hidden}
+.c-item-img img{width:100%;height:100%;object-fit:cover}
+.c-item-info{flex:1}
+.c-item-name{font-size:14px;font-weight:500;margin-bottom:3px}
+.c-item-meta{font-size:12px;color:var(--mid);margin-bottom:8px}
+.c-item-row{display:flex;align-items:center;gap:10px}
+.c-qty-btn{width:26px;height:26px;border:1px solid var(--border);background:none;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.c-qty-num{font-size:14px;font-weight:500;min-width:20px;text-align:center}
+.c-item-price{margin-left:auto;font-size:14px;font-weight:500}
+.c-remove{font-size:11px;color:var(--mid);background:none;border:none;text-decoration:underline;cursor:pointer;margin-left:6px}
+.cart-foot{padding:22px 28px;border-top:1px solid var(--border)}
+.cart-row{display:flex;justify-content:space-between;font-size:13px;color:var(--mid);margin-bottom:7px}
+.cart-total-row{display:flex;justify-content:space-between;font-size:16px;font-weight:500;margin:12px 0 18px}
+.cart-co-btns{display:flex;flex-direction:column;gap:9px}
+.rzp-btn{background:#072654;color:#fff;border:none;padding:13px;font-size:12px;letter-spacing:1px;text-transform:uppercase;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.pp-btn{background:#ffc439;color:#003087;border:none;padding:13px;font-size:13px;font-weight:600;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+.secure-note{font-size:10px;color:var(--mid);text-align:center;margin-top:8px}
+
+/* ── CHECKOUT ── */
+.co-wrap{max-width:1000px;margin:0 auto;padding:40px 80px 60px;display:grid;grid-template-columns:1fr 360px;gap:48px}
+.co-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:300;margin-bottom:28px}
+.co-sec-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.co-sec{margin-bottom:28px}
+.co-row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;letter-spacing:.5px;color:var(--mid);margin-bottom:5px;text-transform:uppercase}
+.fg input,.fg select{width:100%;border:1px solid var(--border);background:var(--cream);padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus{border-color:var(--dark)}
+.pay-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.pay-opt{border:1px solid var(--border);padding:14px;text-align:center;cursor:pointer;transition:all .2s}
+.pay-opt.sel{border-color:var(--dark);background:var(--dark);color:var(--white)}
+.pay-opt-name{font-size:13px;font-weight:500;margin-bottom:3px}
+.pay-opt-desc{font-size:11px;color:var(--mid)}
+.pay-opt.sel .pay-opt-desc{color:rgba(253,246,240,.6)}
+.place-btn{width:100%;padding:15px;background:var(--dark);color:var(--white);border:none;font-family:'DM Sans',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s}
+.place-btn:hover{background:#4a3830}
+.co-summary{background:var(--white);border:1px solid var(--border);padding:26px;height:fit-content;position:sticky;top:80px}
+.co-sum-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;margin-bottom:20px}
+.co-item{display:flex;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.co-item-img{width:58px;height:58px;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;overflow:hidden}
+.co-item-img img{width:100%;height:100%;object-fit:cover}
+.co-item-name{font-size:13px;font-weight:500;margin-bottom:2px}
+.co-item-meta{font-size:11px;color:var(--mid)}
+.co-item-price{margin-left:auto;font-size:13px;font-weight:500;white-space:nowrap}
+.co-line{display:flex;justify-content:space-between;font-size:13px;color:var(--mid);margin-bottom:7px}
+.co-total-line{display:flex;justify-content:space-between;font-size:16px;font-weight:500;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+
+/* ── SUCCESS ── */
+.success-wrap{max-width:560px;margin:80px auto;text-align:center;padding:40px}
+.success-icon{font-size:64px;margin-bottom:18px}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:38px;font-weight:300;margin-bottom:10px}
+.success-sub{font-size:14px;color:var(--mid);line-height:1.8;margin-bottom:28px}
+.success-card{background:var(--white);border:1px solid var(--border);padding:22px;margin-bottom:28px;text-align:left}
+.success-row{display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid var(--border)}
+.success-row:last-child{border:none;font-weight:500;padding-top:10px}
+
+/* ── FOOTER ── */
+footer{background:var(--dark);color:rgba(253,246,240,.5);padding:48px 40px}
+.footer-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px}
+.footer-brand .footer-logo{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--white);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.footer-brand p{font-size:12px;line-height:1.9}
+.footer-col-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(253,246,240,.4);margin-bottom:14px}
+.footer-col a{display:block;font-size:12px;color:rgba(253,246,240,.5);text-decoration:none;margin-bottom:8px;transition:color .2s;cursor:pointer}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{max-width:1300px;margin:0 auto;padding-top:24px;border-top:1px solid rgba(253,246,240,.1);display:flex;justify-content:space-between;font-size:11px;flex-wrap:wrap;gap:8px}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--dark);color:var(--white);padding:12px 28px;font-size:13px;z-index:700;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="go('home')">Marché</div>
+    <ul class="nav-links">
+      <li class="nav-item"><a onclick="go('home')">Home</a></li>
+      <li class="nav-item"><a onclick="go('shopall')">Shop All</a></li>
+      <li class="nav-item">
+        <a onclick="go('men')">Men ▾</a>
+        <div class="dropdown">
+          <a onclick="goMat('men','titanium')">Titanium</a>
+          <a onclick="goMat('men','metal')">Metal</a>
+          <a onclick="goMat('men','acetate')">Acetate</a>
+          <a onclick="goMat('men','tr')">TR</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a onclick="go('women')">Women ▾</a>
+        <div class="dropdown">
+          <a onclick="goMat('women','titanium')">Titanium</a>
+          <a onclick="goMat('women','metal')">Metal</a>
+          <a onclick="goMat('women','acetate')">Acetate</a>
+          <a onclick="goMat('women','tr')">TR</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a onclick="go('kids')">Kids ▾</a>
+        <div class="dropdown">
+          <a onclick="goMat('kids','titanium')">Titanium</a>
+          <a onclick="goMat('kids','metal')">Metal</a>
+          <a onclick="goMat('kids','acetate')">Acetate</a>
+          <a onclick="goMat('kids','tr')">TR</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a onclick="go('unisex')">Unisex ▾</a>
+        <div class="dropdown">
+          <a onclick="goMat('unisex','titanium')">Titanium</a>
+          <a onclick="goMat('unisex','metal')">Metal</a>
+          <a onclick="goMat('unisex','acetate')">Acetate</a>
+          <a onclick="goMat('unisex','tr')">TR</a>
+        </div>
+      </li>
+    </ul>
+    <div class="nav-right">
+      <button class="cart-btn" onclick="toggleCart()">🛍 Cart <span class="cart-num" id="cart-count">0</span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════ HOME ════════════════ -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">New Collection — 2025</div>
+      <h1 class="hero-h1">Crafted for<br><em>Your Gaze</em></h1>
+      <p class="hero-p">Premium handcrafted Italian spectacles — designed for comfort, refined for style. Find your perfect frame today.</p>
+      <div class="hero-btns">
+        <button class="btn btn-dark" onclick="go('shopall')">Shop All</button>
+        <button class="btn btn-outline" onclick="go('men')">Explore Collections</button>
+      </div>
+    </div>
+    <div class="hero-right" id="hero-carousel">
+      <div class="c-track" id="c-track"></div>
+      <button class="c-arrow c-prev" onclick="prevSlide(event)">&#8592;</button>
+      <button class="c-arrow c-next" onclick="nextSlide(event)">&#8594;</button>
+      <div class="c-dots" id="c-dots"></div>
+    </div>
+  </section>
+  <div class="strip">
+    <div class="strip-item"><div class="strip-icon">✈</div><div class="strip-title">Worldwide Shipping</div><div class="strip-desc">Free above ₹2,000</div></div>
+    <div class="strip-item"><div class="strip-icon">🔒</div><div class="strip-title">Secure Payments</div><div class="strip-desc">Razorpay & PayPal</div></div>
+    <div class="strip-item"><div class="strip-icon">↩</div><div class="strip-title">Easy Returns</div><div class="strip-desc">7-day hassle-free</div></div>
+    <div class="strip-item"><div class="strip-icon">💎</div><div class="strip-title">Italian Crafted</div><div class="strip-desc">Handcrafted frames</div></div>
+  </div>
+  <div class="home-cats">
+    <div class="home-cats-inner">
+      <div class="section-eyebrow">Our Collections</div>
+      <h2 class="section-title">Shop by Category</h2>
+      <div class="cat-cards">
+        <div class="cat-card cat-men" onclick="go('men')">
+          <div class="cat-card-bg"></div>
+          <div class="cat-icon">🕶</div>
+          <div class="cat-card-overlay">
+            <div class="cat-card-label">For Him</div>
+            <div class="cat-card-title">Men</div>
+            <div class="cat-card-sub">Bold. Refined. Commanding.</div>
+            <div class="cat-card-cta">Explore →</div>
+          </div>
+        </div>
+        <div class="cat-card cat-women" onclick="go('women')">
+          <div class="cat-card-bg"></div>
+          <div class="cat-icon">✨</div>
+          <div class="cat-card-overlay">
+            <div class="cat-card-label">For Her</div>
+            <div class="cat-card-title">Women</div>
+            <div class="cat-card-sub">Elegant. Delicate. Timeless.</div>
+            <div class="cat-card-cta">Explore →</div>
+          </div>
+        </div>
+        <div class="cat-card cat-kids" onclick="go('kids')">
+          <div class="cat-card-bg"></div>
+          <div class="cat-icon">🌈</div>
+          <div class="cat-card-overlay">
+            <div class="cat-card-label">For Them</div>
+            <div class="cat-card-title">Kids</div>
+            <div class="cat-card-sub">Bright. Fun. Unbreakable.</div>
+            <div class="cat-card-cta">Explore →</div>
+          </div>
+        </div>
+        <div class="cat-card cat-unisex" onclick="go('unisex')">
+          <div class="cat-card-bg"></div>
+          <div class="cat-icon">⚖️</div>
+          <div class="cat-card-overlay">
+            <div class="cat-card-label">For Everyone</div>
+            <div class="cat-card-title">Unisex</div>
+            <div class="cat-card-sub">Versatile. Modern. Effortless.</div>
+            <div class="cat-card-cta">Explore →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="home-footer"></div>
+</div>
+
+<!-- ════════════════ MEN CATEGORY ════════════════ -->
+<div class="page" id="page-men">
+  <div class="breadcrumb"><a onclick="go('home')">Home</a><span>/</span>Men</div>
+  <div class="cat-hero-men">
+    <div class="cat-men-content">
+      <div class="eyebrow">Men's Collection</div>
+      <h1>The<br>Modern<br>Gentleman</h1>
+      <p>Precision-engineered frames built for the man who commands every room. Four materials. Endless character.</p>
+      <button class="btn btn-outline-light" onclick="goMat('men','titanium')">Browse Collection</button>
+    </div>
+  </div>
+  <div class="mat-selector">
+    <div class="mat-selector-inner men-mat">
+      <div class="mat-selector-title">Choose Your Material</div>
+      <div class="mat-cards">
+        <div class="mat-card" onclick="goMat('men','titanium')">
+          <div class="mat-card-icon">🔩</div>
+          <div class="mat-card-name">Titanium</div>
+          <div class="mat-card-desc">Ultra-light, hypoallergenic and virtually indestructible. The choice of those who demand nothing but the best.</div>
+          <div class="mat-card-cta">Shop Titanium →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('men','metal')">
+          <div class="mat-card-icon">⚙️</div>
+          <div class="mat-card-name">Metal</div>
+          <div class="mat-card-desc">Classic stainless steel with a refined finish. Timeless masculinity, every single day.</div>
+          <div class="mat-card-cta">Shop Metal →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('men','acetate')">
+          <div class="mat-card-icon">🖤</div>
+          <div class="mat-card-name">Acetate</div>
+          <div class="mat-card-desc">Rich Italian acetate in deep tones and bold patterns. Make a statement without saying a word.</div>
+          <div class="mat-card-cta">Shop Acetate →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('men','tr')">
+          <div class="mat-card-icon">💪</div>
+          <div class="mat-card-name">TR</div>
+          <div class="mat-card-desc">TR-90 thermoplastic — feather-light and virtually unbreakable. Built for the man always in motion.</div>
+          <div class="mat-card-cta">Shop TR →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="men-footer"></div>
+</div>
+
+<!-- ════════════════ WOMEN CATEGORY ════════════════ -->
+<div class="page" id="page-women">
+  <div class="breadcrumb"><a onclick="go('home')">Home</a><span>/</span>Women</div>
+  <div class="cat-hero-women">
+    <div class="cat-women-content">
+      <div class="eyebrow">Women's Collection</div>
+      <h1>Grace<br>in Every<br><em>Detail</em></h1>
+      <p>Delicately crafted frames that complement every face, every look, every moment. Italian artistry at its finest.</p>
+      <button class="btn" style="background:#3a1a30;color:var(--white);border:2px solid rgba(255,255,255,.4)" onclick="goMat('women','titanium')">Browse Collection</button>
+    </div>
+  </div>
+  <div class="mat-selector" style="background:#fdf8fc">
+    <div class="mat-selector-inner women-mat">
+      <div class="mat-selector-title">Choose Your Material</div>
+      <div class="mat-cards">
+        <div class="mat-card" onclick="goMat('women','titanium')">
+          <div class="mat-card-icon">🌸</div>
+          <div class="mat-card-name">Titanium</div>
+          <div class="mat-card-desc">Whisper-light frames that feel like they're barely there. Hypoallergenic luxury for sensitive skin.</div>
+          <div class="mat-card-cta">Shop Titanium →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('women','metal')">
+          <div class="mat-card-icon">💫</div>
+          <div class="mat-card-name">Metal</div>
+          <div class="mat-card-desc">Delicate metalwork in rose gold, silver, and gold tones. Feminine, refined, effortlessly beautiful.</div>
+          <div class="mat-card-cta">Shop Metal →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('women','acetate')">
+          <div class="mat-card-icon">🌺</div>
+          <div class="mat-card-name">Acetate</div>
+          <div class="mat-card-desc">Lush acetate in blush, tortoise and jewel tones. Bold enough to be noticed, refined enough for everyday.</div>
+          <div class="mat-card-cta">Shop Acetate →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('women','tr')">
+          <div class="mat-card-icon">🦋</div>
+          <div class="mat-card-name">TR</div>
+          <div class="mat-card-desc">Lightweight flexibility meets feminine style. Perfect for those long days when comfort cannot be compromised.</div>
+          <div class="mat-card-cta">Shop TR →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="women-footer"></div>
+</div>
+
+<!-- ════════════════ KIDS CATEGORY ════════════════ -->
+<div class="page" id="page-kids">
+  <div class="breadcrumb"><a onclick="go('home')">Home</a><span>/</span>Kids</div>
+  <div class="cat-hero-kids">
+    <div class="cat-kids-content">
+      <div class="eyebrow">Kids' Collection</div>
+      <h1>Big<br><em>Adventures</em><br>Await</h1>
+      <p>Frames as colourful and unstoppable as they are. Built tough, designed fun — ready for every playground.</p>
+      <button class="btn" style="background:#d04080;color:var(--white);border:2px solid transparent" onclick="goMat('kids','tr')">Browse Collection</button>
+    </div>
+  </div>
+  <div class="mat-selector" style="background:#fffdf8">
+    <div class="mat-selector-inner kids-mat">
+      <div class="mat-selector-title">Choose Your Material</div>
+      <div class="mat-cards">
+        <div class="mat-card" onclick="goMat('kids','titanium')">
+          <div class="mat-card-icon">⭐</div>
+          <div class="mat-card-name">Titanium</div>
+          <div class="mat-card-desc">Super-light so they forget they're wearing them. Incredibly strong so you stop worrying.</div>
+          <div class="mat-card-cta">Shop Titanium →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('kids','metal')">
+          <div class="mat-card-icon">🎯</div>
+          <div class="mat-card-name">Metal</div>
+          <div class="mat-card-desc">Sporty metal frames in vibrant colours. Light, adjustable, and ready for active little lives.</div>
+          <div class="mat-card-cta">Shop Metal →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('kids','acetate')">
+          <div class="mat-card-icon">🎨</div>
+          <div class="mat-card-name">Acetate</div>
+          <div class="mat-card-desc">Bold patterns and bright colours in durable acetate. Let their personality shine through every lens.</div>
+          <div class="mat-card-cta">Shop Acetate →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('kids','tr')">
+          <div class="mat-card-icon">🏃</div>
+          <div class="mat-card-name">TR</div>
+          <div class="mat-card-desc">The most flexible, bendable, drop-proof frame we make. Made for the kid who treats everything as an obstacle course.</div>
+          <div class="mat-card-cta">Shop TR →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="kids-footer"></div>
+</div>
+
+<!-- ════════════════ UNISEX CATEGORY ════════════════ -->
+<div class="page" id="page-unisex">
+  <div class="breadcrumb"><a onclick="go('home')">Home</a><span>/</span>Unisex</div>
+  <div class="cat-hero-unisex">
+    <div class="cat-unisex-content">
+      <div class="eyebrow">Unisex Collection</div>
+      <h1>Frames<br>Beyond<br>Labels</h1>
+      <p>Clean lines, considered proportions and materials that look as good on everyone. Style with no rules.</p>
+      <button class="btn btn-dark" onclick="goMat('unisex','titanium')">Browse Collection</button>
+    </div>
+  </div>
+  <div class="mat-selector" style="background:#f9f8f6">
+    <div class="mat-selector-inner unisex-mat">
+      <div class="mat-selector-title">Choose Your Material</div>
+      <div class="mat-cards">
+        <div class="mat-card" onclick="goMat('unisex','titanium')">
+          <div class="mat-card-icon">🔩</div>
+          <div class="mat-card-name">Titanium</div>
+          <div class="mat-card-desc">Architectural minimalism at its lightest. These frames disappear on the face while defining it completely.</div>
+          <div class="mat-card-cta">Shop Titanium →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('unisex','metal')">
+          <div class="mat-card-icon">⚡</div>
+          <div class="mat-card-name">Metal</div>
+          <div class="mat-card-desc">Understated metal with clean geometry. The kind of frame that goes with everything, always.</div>
+          <div class="mat-card-cta">Shop Metal →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('unisex','acetate')">
+          <div class="mat-card-icon">◼</div>
+          <div class="mat-card-name">Acetate</div>
+          <div class="mat-card-desc">Neutral tortoise, clear, and matte black. Classic shapes that transcend trends entirely.</div>
+          <div class="mat-card-cta">Shop Acetate →</div>
+        </div>
+        <div class="mat-card" onclick="goMat('unisex','tr')">
+          <div class="mat-card-icon">🌀</div>
+          <div class="mat-card-name">TR</div>
+          <div class="mat-card-desc">Maximum comfort, minimum fuss. These wear-all-day frames feel like they were made just for you.</div>
+          <div class="mat-card-cta">Shop TR →</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="unisex-footer"></div>
+</div>
+
+<!-- ════════════════ PRODUCT LIST PAGE ════════════════ -->
+<div class="page" id="page-prodlist">
+  <div class="breadcrumb" id="pl-breadcrumb"></div>
+  <div class="prodlist-hero">
+    <div class="prodlist-hero-inner">
+      <div class="prodlist-top">
+        <div>
+          <div id="pl-eyebrow" style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:8px"></div>
+          <div class="prodlist-title" id="pl-title"></div>
+          <div class="prodlist-meta" id="pl-meta"></div>
+        </div>
+        <div class="prodlist-sort">
+          <span>Sort:</span>
+          <select onchange="sortProds(this.value)" id="pl-sort">
+            <option value="featured">Featured</option>
+            <option value="low">Price: Low to High</option>
+            <option value="high">Price: High to Low</option>
+            <option value="name">Name: A–Z</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="prodlist-body">
+    <!-- Material sub-tabs -->
+    <div id="pl-mat-tabs" style="display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap"></div>
+    <div class="p-grid" id="pl-grid"></div>
+    <div id="pl-empty" style="display:none;text-align:center;padding:60px;color:var(--mid)">
+      <div style="font-size:48px;margin-bottom:12px">👓</div>
+      No products here yet. Check back soon!
+    </div>
+  </div>
+  <div id="prodlist-footer"></div>
+</div>
+
+<!-- ════════════════ SHOP ALL ════════════════ -->
+<div class="page" id="page-shopall">
+  <div class="shopall-hero">
+    <h1>Shop All Frames</h1>
+    <p>Browse our full collection — filter by category, material, price and more.</p>
+  </div>
+  <div class="shopall-body">
+    <div class="filter-panel">
+      <div class="filter-section">
+        <div class="filter-title">Category</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" value="men" onchange="applyFilters()"> Men</label>
+          <label class="filter-opt"><input type="checkbox" value="women" onchange="applyFilters()"> Women</label>
+          <label class="filter-opt"><input type="checkbox" value="kids" onchange="applyFilters()"> Kids</label>
+          <label class="filter-opt"><input type="checkbox" value="unisex" onchange="applyFilters()"> Unisex</label>
+        </div>
+      </div>
+      <div class="filter-section">
+        <div class="filter-title">Material</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" value="titanium" onchange="applyFilters()"> Titanium</label>
+          <label class="filter-opt"><input type="checkbox" value="metal" onchange="applyFilters()"> Metal</label>
+          <label class="filter-opt"><input type="checkbox" value="acetate" onchange="applyFilters()"> Acetate</label>
+          <label class="filter-opt"><input type="checkbox" value="tr" onchange="applyFilters()"> TR</label>
+        </div>
+      </div>
+      <div class="filter-section">
+        <div class="filter-title">Price Range</div>
+        <div class="price-range">
+          <input type="range" id="price-slider" min="0" max="5000" value="5000" step="100" oninput="updatePriceLabel();applyFilters()">
+          <div class="price-labels"><span>₹0</span><span id="price-label">Up to ₹5,000</span></div>
+        </div>
+      </div>
+      <div class="filter-section">
+        <div class="filter-title">Availability</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" value="instock" id="f-instock" onchange="applyFilters()"> In Stock Only</label>
+        </div>
+      </div>
+      <div class="filter-section">
+        <div class="filter-title">Badge</div>
+        <div class="filter-opts">
+          <label class="filter-opt"><input type="checkbox" value="New" onchange="applyFilters()"> New</label>
+          <label class="filter-opt"><input type="checkbox" value="Sale" onchange="applyFilters()"> Sale</label>
+          <label class="filter-opt"><input type="checkbox" value="Best Seller" onchange="applyFilters()"> Best Seller</label>
+        </div>
+      </div>
+      <button class="filter-clear" onclick="clearFilters()">Clear All Filters</button>
+    </div>
+    <div class="shopall-results">
+      <div class="shopall-toolbar">
+        <div class="shopall-count" id="sa-count">0 products</div>
+        <div class="shopall-sort"><select onchange="applyFilters()" id="sa-sort"><option value="featured">Featured</option><option value="low">Price: Low–High</option><option value="high">Price: High–Low</option><option value="name">Name: A–Z</option></select></div>
+      </div>
+      <div class="active-filters" id="active-filters"></div>
+      <div class="p-grid" id="sa-grid"></div>
+      <div id="sa-empty" style="display:none;text-align:center;padding:60px;color:var(--mid)">
+        <div style="font-size:48px;margin-bottom:12px">🔍</div>
+        No products match your filters. <button class="filter-clear" onclick="clearFilters()" style="display:inline">Clear filters →</button>
+      </div>
+    </div>
+  </div>
+  <div id="shopall-footer"></div>
+</div>
+
+<!-- ════════════════ PRODUCT DETAIL ════════════════ -->
+<div class="page" id="page-product">
+  <div class="breadcrumb" id="pd-breadcrumb"></div>
+  <div class="pd-wrap">
+    <div class="pd-gallery">
+      <div class="pd-main" id="pd-main"></div>
+      <div class="pd-thumbs" id="pd-thumbs"></div>
+    </div>
+    <div class="pd-info">
+      <div id="pd-mat-tag" class="pd-mat-tag"></div>
+      <h1 class="pd-name" id="pd-name"></h1>
+      <div class="pd-meta-text" id="pd-meta"></div>
+      <div class="pd-price-row" id="pd-price-row"></div>
+      <div class="pd-section-label">Frame Colour</div>
+      <div class="pd-color-opts" id="pd-colors"></div>
+      <div class="pd-section-label">Quantity</div>
+      <div class="pd-qty-row">
+        <button class="pd-qty-btn" onclick="chQty(-1)">−</button>
+        <input class="pd-qty-val" id="pd-qty" type="number" value="1" min="1" max="10" readonly>
+        <button class="pd-qty-btn" onclick="chQty(1)">+</button>
+      </div>
+      <div id="pd-stock-msg" style="font-size:12px;margin-bottom:12px"></div>
+      <div class="pd-actions" id="pd-actions"></div>
+      <div class="pd-spec-table" id="pd-specs"></div>
+    </div>
+  </div>
+  <div id="product-footer"></div>
+</div>
+
+<!-- ════════════════ CHECKOUT ════════════════ -->
+<div class="page" id="page-checkout">
+  <div class="breadcrumb"><a onclick="go('home')">Home</a><span>/</span><a onclick="toggleCart()">Cart</a><span>/</span>Checkout</div>
+  <div class="co-wrap">
+    <div>
+      <h2 class="co-title">Checkout</h2>
+      <div class="co-sec">
+        <div class="co-sec-title">Contact Information</div>
+        <div class="co-row2">
+          <div class="fg"><label>First Name</label><input id="co-fname" placeholder="Harshul"></div>
+          <div class="fg"><label>Last Name</label><input id="co-lname" placeholder="Kumar"></div>
+        </div>
+        <div class="fg"><label>Email</label><input id="co-email" type="email" placeholder="you@example.com"></div>
+        <div class="fg"><label>Phone</label><input id="co-phone" type="tel" placeholder="+91 98765 43210"></div>
+      </div>
+      <div class="co-sec">
+        <div class="co-sec-title">Shipping Address</div>
+        <div class="fg"><label>Address</label><input id="co-address" placeholder="123 MG Road"></div>
+        <div class="co-row2">
+          <div class="fg"><label>City</label><input id="co-city" placeholder="Mumbai"></div>
+          <div class="fg"><label>Pincode</label><input id="co-pin" placeholder="400001"></div>
+        </div>
+        <div class="fg"><label>State</label><input id="co-state" placeholder="Maharashtra"></div>
+        <div class="fg"><label>Country</label>
+          <select id="co-country"><option>India</option><option>United States</option><option>United Kingdom</option><option>UAE</option><option>Canada</option><option>Australia</option><option>Singapore</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="co-sec">
+        <div class="co-sec-title">Payment Method</div>
+        <div class="pay-opts">
+          <div class="pay-opt sel" id="po-rzp" onclick="selPay('rzp')"><div class="pay-opt-name">💳 Razorpay</div><div class="pay-opt-desc">UPI · Cards · NetBanking</div></div>
+          <div class="pay-opt" id="po-pp" onclick="selPay('pp')"><div class="pay-opt-name">🅿 PayPal</div><div class="pay-opt-desc">Global · Secure</div></div>
+        </div>
+      </div>
+      <button class="place-btn" onclick="placeOrder()">Place Order & Pay →</button>
+    </div>
+    <div class="co-summary">
+      <div class="co-sum-title">Order Summary</div>
+      <div id="co-items"></div>
+      <div class="co-line"><span>Subtotal</span><span id="co-sub"></span></div>
+      <div class="co-line"><span>Shipping</span><span>Free</span></div>
+      <div class="co-line"><span>GST (18%)</span><span id="co-tax"></span></div>
+      <div class="co-total-line"><span>Total</span><span id="co-total"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ ORDER SUCCESS ════════════════ -->
+<div class="page" id="page-success">
+  <div class="success-wrap">
+    <div class="success-icon">✅</div>
+    <h2 class="success-title">Order Confirmed!</h2>
+    <p class="success-sub">Thank you for your purchase. A confirmation email is on its way. Your frames will be packed and dispatched within 2 business days.</p>
+    <div class="success-card" id="success-card"></div>
+    <button class="btn btn-dark" onclick="go('home');cart=[];renderCart()">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-head">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cart-body"></div>
+  <div class="cart-foot" id="cart-foot" style="display:none">
+    <div class="cart-row"><span>Subtotal</span><span id="c-sub"></span></div>
+    <div class="cart-row"><span>Shipping</span><span>Free</span></div>
+    <div class="cart-total-row"><span>Total</span><span id="c-total"></span></div>
+    <div class="cart-co-btns">
+      <button class="rzp-btn" onclick="goCheckout()">💳 Checkout with Razorpay</button>
+      <button class="pp-btn" onclick="goCheckout()">🅿 Checkout with PayPal</button>
+    </div>
+    <p class="secure-note">🔒 256-bit SSL · Secure checkout</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════
+// FOOTER HTML (reused everywhere)
+// ═══════════════════════════════════════
+const FOOTER_HTML = `<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">Marché</div>
+      <p>Premium handcrafted Italian spectacles. Crafted for comfort, designed for style.</p>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Shop</div>
+      <a onclick="go('men')">Men</a>
+      <a onclick="go('women')">Women</a>
+      <a onclick="go('kids')">Kids</a>
+      <a onclick="go('unisex')">Unisex</a>
+      <a onclick="go('shopall')">Shop All</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Materials</div>
+      <a onclick="goMat('men','titanium')">Titanium</a>
+      <a onclick="goMat('men','metal')">Metal</a>
+      <a onclick="goMat('men','acetate')">Acetate</a>
+      <a onclick="goMat('men','tr')">TR</a>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Help</div>
+      <a>Shipping Info</a>
+      <a>Returns</a>
+      <a>Size Guide</a>
+      <a>Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Marché Designs. All rights reserved.</span>
+    <span>marchedesigns.com</span>
+  </div>
+</footer>`;
+
+['home','men','women','kids','unisex','prodlist','shopall','product'].forEach(id=>{
+  const el=document.getElementById(id+'-footer')||document.getElementById('prodlist-footer');
+  if(document.getElementById(id+'-footer')) document.getElementById(id+'-footer').innerHTML=FOOTER_HTML;
+});
+['home','men','women','kids','unisex','shopall','product'].forEach(id=>{
+  const el=document.getElementById(id+'-footer');
+  if(el) el.innerHTML=FOOTER_HTML;
+});
+document.getElementById('prodlist-footer').innerHTML=FOOTER_HTML;
+
+// ═══════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════
+const COLORS = {
+  men:{
+    titanium:[{name:'Gunmetal',hex:'#4a4a52'},{name:'Silver',hex:'#c0c0c8'},{name:'Gold',hex:'#c9a07a'},{name:'Matte Black',hex:'#2a2a2a'}],
+    metal:[{name:'Black',hex:'#2a1f1a'},{name:'Silver',hex:'#c0c0c8'},{name:'Bronze',hex:'#8b6914'},{name:'Navy',hex:'#1a2a4a'}],
+    acetate:[{name:'Tortoise',hex:'#7a4a1a'},{name:'Black',hex:'#1a1a1a'},{name:'Havana',hex:'#5a2a0a'},{name:'Brown',hex:'#6b4226'},{name:'Clear',hex:'#e8e0d8'}],
+    tr:[{name:'Black',hex:'#2a1f1a'},{name:'Dark Blue',hex:'#1a2a4a'},{name:'Charcoal',hex:'#4a4a4a'},{name:'Dark Green',hex:'#2a3a2a'}]
+  },
+  women:{
+    titanium:[{name:'Rose Gold',hex:'#d4a0a0'},{name:'Gold',hex:'#c9a07a'},{name:'Silver',hex:'#c0c0c8'},{name:'Lilac',hex:'#c0a8d4'}],
+    metal:[{name:'Rose Gold',hex:'#d4a0a0'},{name:'Gold',hex:'#c9a07a'},{name:'Black',hex:'#2a1f1a'},{name:'Silver',hex:'#c0c0c8'}],
+    acetate:[{name:'Blush',hex:'#e8b4b8'},{name:'Tortoise',hex:'#7a4a1a'},{name:'Purple',hex:'#6a4a8a'},{name:'Clear',hex:'#e8e0d8'},{name:'Teal',hex:'#2a7a7a'}],
+    tr:[{name:'Pink',hex:'#e8a0b0'},{name:'Purple',hex:'#8a6aaa'},{name:'Black',hex:'#2a1f1a'},{name:'Teal',hex:'#2a7a7a'}]
+  },
+  kids:{
+    titanium:[{name:'Blue',hex:'#4a7ab4'},{name:'Pink',hex:'#e8a0b0'},{name:'Green',hex:'#4a8a4a'},{name:'Purple',hex:'#8a6aaa'}],
+    metal:[{name:'Blue',hex:'#4a7ab4'},{name:'Red',hex:'#c04a4a'},{name:'Green',hex:'#4a8a4a'},{name:'Orange',hex:'#d4784a'}],
+    acetate:[{name:'Red',hex:'#c04a4a'},{name:'Blue',hex:'#4a7ab4'},{name:'Yellow',hex:'#d4aa4a'},{name:'Green',hex:'#4a8a4a'},{name:'Pink',hex:'#e8a0b0'}],
+    tr:[{name:'Blue',hex:'#4a7ab4'},{name:'Pink',hex:'#e8a0b0'},{name:'Green',hex:'#4a8a4a'},{name:'Orange',hex:'#d4784a'},{name:'Purple',hex:'#8a6aaa'}]
+  },
+  unisex:{
+    titanium:[{name:'Silver',hex:'#c0c0c8'},{name:'Gunmetal',hex:'#4a4a52'},{name:'Gold',hex:'#c9a07a'},{name:'Black',hex:'#2a1f1a'}],
+    metal:[{name:'Black',hex:'#2a1f1a'},{name:'Silver',hex:'#c0c0c8'},{name:'Bronze',hex:'#8b6914'},{name:'Gold',hex:'#c9a07a'}],
+    acetate:[{name:'Tortoise',hex:'#7a4a1a'},{name:'Clear',hex:'#e8e0d8'},{name:'Black',hex:'#1a1a1a'},{name:'Brown',hex:'#6b4226'}],
+    tr:[{name:'Black',hex:'#2a1f1a'},{name:'Grey',hex:'#6a6a6a'},{name:'Navy',hex:'#1a2a4a'},{name:'Forest',hex:'#2a4a2a'}]
+  }
+};
+
+const NAMES = {
+  men:{
+    titanium:['Aviator Pro','Slim Rectangle','Square Edge','Navigator Classic','Titan Pilot'],
+    metal:['Round Metal','Oval Classic','Rectangle Bold','Pilot Frame','Heritage Round'],
+    acetate:['Thick Square','Wayfarer Bold','Round Tortoise','Classic Browline','Slim Acetate'],
+    tr:['Sport Wrap','Flexible Round','TR Square','Active Pilot']
+  },
+  women:{
+    titanium:['Butterfly Frame','Cat Eye Slim','Oval Elegant','Round Delicate','Petal Titanium'],
+    metal:['Cat Eye Metal','Oval Rose','Round Gold','Rimless Metal','Feather Metal'],
+    acetate:['Cat Eye Bold','Oversized Round','Square Statement','Browline Women','Slim Acetate'],
+    tr:['Flexible Cat Eye','Sport Oval','TR Butterfly','Active Round']
+  },
+  kids:{
+    titanium:['Mini Oval','Small Rectangle','Junior Round','Tiny Square'],
+    metal:['Kids Oval','Junior Metal','Small Round','Mini Rectangle'],
+    acetate:['Colourful Square','Kids Cat Eye','Fun Round','Bold Rectangle','Junior Acetate'],
+    tr:['Flexi Kids','Active Junior','TR Mini','Sport Kids','Bendable Round']
+  },
+  unisex:{
+    titanium:['Round Titanium','Rectangle Uni','Hexagon Ti','Oval Uni'],
+    metal:['Classic Round','Slim Rectangle','Oval Metal','Square Metal'],
+    acetate:['Thick Round','Wayfarer Uni','Hexagon Acetate','Slim Oval'],
+    tr:['Round TR','Square Flex','Oval Active','Sport Uni']
+  }
+};
+
+const BASE = {titanium:2800,metal:1800,acetate:2200,tr:1600};
+const ICONS = {men:'🕶',women:'✨',kids:'🌈',unisex:'👓'};
+const CAT_LABELS = {men:"Men's",women:"Women's",kids:"Kids'",unisex:"Unisex"};
+const MAT_LABELS = {titanium:'Titanium',metal:'Metal',acetate:'Acetate',tr:'TR'};
+const MAT_DESCS = {
+  titanium:'Ultra-lightweight, hypoallergenic titanium frames.',
+  metal:'Classic stainless steel with a refined finish.',
+  acetate:'Rich, handcrafted Italian acetate frames.',
+  tr:'TR-90 thermoplastic — super flexible, virtually unbreakable.'
+};
+
+function getAdminProducts(cat, mat){
+  try{
+    const all=JSON.parse(localStorage.getItem('mp_products')||'[]');
+    const filtered=all.filter(p=>p.cat===cat&&p.mat===mat);
+    if(filtered.length>0) return filtered.map(p=>({...p,icon:ICONS[p.cat]}));
+  }catch(e){}
+  return null;
+}
+
+function makeProducts(cat,mat){
+  const admin=getAdminProducts(cat,mat);
+  if(admin) return admin;
+  const names=NAMES[cat]?.[mat]||[];
+  return names.map((name,i)=>({
+    id:`${cat}-${mat}-${i}`,name,cat,mat,
+    price:BASE[mat]+(i%3)*300+Math.floor(i/2)*150,
+    oldPrice:i%4===0?BASE[mat]+(i%3)*300+Math.floor(i/2)*150+600:null,
+    colors:COLORS[cat][mat],
+    badge:i===0?'New':i%4===3?'Sale':null,
+    icon:ICONS[cat],stock:999,lowAt:5,images:[],
+    details:{'Frame Material':MAT_LABELS[mat],'Lens Width':`${50+i}mm`,'Bridge':`${16+i%4}mm`,'Temple':'145mm','Weight':mat==='titanium'?'12g':mat==='tr'?'14g':'18g','Lens Type':'Single Vision / Bifocal','Category':CAT_LABELS[cat]}
+  }));
+}
+
+function getAllProducts(){
+  const all=[];
+  ['men','women','kids','unisex'].forEach(cat=>{
+    ['titanium','metal','acetate','tr'].forEach(mat=>{
+      makeProducts(cat,mat).forEach(p=>all.push(p));
+    });
+  });
+  return all;
+}
+
+function getStock(id){
+  try{const s=JSON.parse(localStorage.getItem('mp_stock')||'{}');return s[id]??999;}catch(e){return 999;}
+}
+
+// ═══════════════════════════════════════
+// HERO CAROUSEL
+// ═══════════════════════════════════════
+const BG_MAP = ['#f5ede3','#ede3ee','#e3edf5','#e3f0e8'];
+function getSlides(){
+  try{const s=JSON.parse(localStorage.getItem('mp_hero')||'null');if(s&&s.length)return s;}catch(e){}
+  return [
+    {id:1,name:'Aviator Pro',meta:'Men · Titanium',price:'₹2,800',icon:'🕶',bg:'#f5ede3'},
+    {id:2,name:'Cat Eye Slim',meta:'Women · Titanium',price:'₹2,950',icon:'✨',bg:'#ede3ee'},
+    {id:3,name:'Round Tortoise',meta:'Unisex · Acetate',price:'₹2,350',icon:'👓',bg:'#e3edf5'},
+    {id:4,name:'Flexi Kids',meta:'Kids · TR',price:'₹1,750',icon:'🌈',bg:'#e3f0e8'},
+  ];
+}
+const slides=getSlides();
+let cIdx=0,cTimer=null;
+
+function buildCarousel(){
+  const track=document.getElementById('c-track');
+  const dots=document.getElementById('c-dots');
+  if(!track)return;
+  track.innerHTML=slides.map((s,i)=>`
+    <div class="c-slide" style="background:${s.bg||BG_MAP[i%4]}" onclick="slideClick(${i})">
+      <div class="c-slide-img">${s.img?`<img src="${s.img}" alt="${s.name}">`:`<span style="font-size:90px">${s.icon||'👓'}</span>`}</div>
+      <div class="c-slide-name">${s.name}</div>
+      <div class="c-slide-meta">${s.meta}</div>
+      <div class="c-slide-price">${s.price}</div>
+      <div class="c-slide-cta">Shop Now →</div>
+    </div>`).join('');
+  dots.innerHTML=slides.map((_,i)=>`<button class="c-dot${i===cIdx?' on':''}" onclick="gSlide(${i})"></button>`).join('');
+  track.style.transform=`translateX(-${cIdx*100}%)`;
+}
+function gSlide(n){
+  cIdx=(n+slides.length)%slides.length;
+  const t=document.getElementById('c-track');
+  if(t)t.style.transform=`translateX(-${cIdx*100}%)`;
+  document.querySelectorAll('.c-dot').forEach((d,i)=>d.classList.toggle('on',i===cIdx));
+}
+function nextSlide(e){if(e){e.stopPropagation();}gSlide(cIdx+1);}
+function prevSlide(e){if(e){e.stopPropagation();}gSlide(cIdx-1);}
+function slideClick(i){
+  const s=slides[i];if(!s)return;
+  const meta=(s.meta||'').toLowerCase();
+  const cat=['men','women','kids','unisex'].find(c=>meta.includes(c))||'men';
+  const mat=['titanium','metal','acetate','tr'].find(m=>meta.includes(m))||'titanium';
+  goMat(cat,mat);
+}
+function startAuto(){cTimer=setInterval(()=>gSlide(cIdx+1),3500);}
+function stopAuto(){clearInterval(cTimer);}
+const hc=document.getElementById('hero-carousel');
+if(hc){hc.addEventListener('mouseenter',stopAuto);hc.addEventListener('mouseleave',startAuto);}
+
+// ═══════════════════════════════════════
+// PAGE ROUTING
+// ═══════════════════════════════════════
+function go(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  window.scrollTo(0,0);
+  if(name==='shopall'){renderShopAll();}
+}
+
+function goMat(cat,mat){
+  currentCat=cat;currentMat=mat;
+  renderProdList();
+  go('prodlist');
+}
+
+// ═══════════════════════════════════════
+// PRODUCT LIST PAGE
+// ═══════════════════════════════════════
+let currentCat='men',currentMat='titanium',currentSort='featured';
+let currentProduct=null,selColor=0,pdQty=1;
+
+function renderProdList(){
+  // Breadcrumb
+  document.getElementById('pl-breadcrumb').innerHTML=
+    `<a onclick="go('home')">Home</a><span>/</span><a onclick="go('${currentCat}')">${CAT_LABELS[currentCat]}</a><span>/</span>${MAT_LABELS[currentMat]}`;
+  // Header
+  document.getElementById('pl-eyebrow').textContent=`${CAT_LABELS[currentCat]} Collection`;
+  document.getElementById('pl-title').textContent=`${MAT_LABELS[currentMat]} Frames`;
+  document.getElementById('pl-meta').textContent=MAT_DESCS[currentMat];
+  // Material tabs
+  document.getElementById('pl-mat-tabs').innerHTML=['titanium','metal','acetate','tr'].map(m=>`
+    <button onclick="goMat('${currentCat}','${m}')" style="padding:9px 22px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;border:1px solid ${m===currentMat?'var(--dark)':'var(--border)'};background:${m===currentMat?'var(--dark)':'var(--white)'};color:${m===currentMat?'var(--white)':'var(--mid)'};font-family:\'DM Sans\',sans-serif;cursor:pointer;transition:all .2s">
+      ${MAT_LABELS[m]}
+    </button>`).join('');
+  renderProdGrid();
+}
+
+function renderProdGrid(){
+  let prods=[...makeProducts(currentCat,currentMat)];
+  if(currentSort==='low')prods.sort((a,b)=>a.price-b.price);
+  if(currentSort==='high')prods.sort((a,b)=>b.price-a.price);
+  if(currentSort==='name')prods.sort((a,b)=>a.name.localeCompare(b.name));
+  const grid=document.getElementById('pl-grid');
+  const empty=document.getElementById('pl-empty');
+  if(!prods.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=prods.map(p=>prodCardHTML(p)).join('');
+}
+
+function sortProds(val){currentSort=val;renderProdGrid();}
+
+// ═══════════════════════════════════════
+// SHOP ALL
+// ═══════════════════════════════════════
+function renderShopAll(){
+  applyFilters();
+}
+function updatePriceLabel(){
+  const v=document.getElementById('price-slider').value;
+  document.getElementById('price-label').textContent=v>=5000?'Any price':`Up to ₹${Number(v).toLocaleString('en-IN')}`;
+}
+function applyFilters(){
+  const cats=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].filter(c=>['men','women','kids','unisex'].includes(c.value)&&c.checked).map(c=>c.value);
+  const mats=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].filter(c=>['titanium','metal','acetate','tr'].includes(c.value)&&c.checked).map(c=>c.value);
+  const badges=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].filter(c=>['New','Sale','Best Seller'].includes(c.value)&&c.checked).map(c=>c.value);
+  const maxPrice=Number(document.getElementById('price-slider').value);
+  const inStockOnly=document.getElementById('f-instock').checked;
+  const sortVal=document.getElementById('sa-sort').value;
+  let all=getAllProducts();
+  if(cats.length)all=all.filter(p=>cats.includes(p.cat));
+  if(mats.length)all=all.filter(p=>mats.includes(p.mat));
+  if(badges.length)all=all.filter(p=>badges.includes(p.badge));
+  if(maxPrice<5000)all=all.filter(p=>p.price<=maxPrice);
+  if(inStockOnly)all=all.filter(p=>getStock(p.id)>0);
+  if(sortVal==='low')all.sort((a,b)=>a.price-b.price);
+  if(sortVal==='high')all.sort((a,b)=>b.price-a.price);
+  if(sortVal==='name')all.sort((a,b)=>a.name.localeCompare(b.name));
+  document.getElementById('sa-count').textContent=`${all.length} product${all.length!==1?'s':''}`;
+  const grid=document.getElementById('sa-grid');
+  const empty=document.getElementById('sa-empty');
+  if(!all.length){grid.innerHTML='';empty.style.display='block';}
+  else{empty.style.display='none';grid.innerHTML=all.map(p=>prodCardHTML(p)).join('');}
+  // Active filter tags
+  const tags=[];
+  cats.forEach(c=>tags.push({label:CAT_LABELS[c],val:c,type:'cat'}));
+  mats.forEach(m=>tags.push({label:MAT_LABELS[m],val:m,type:'mat'}));
+  badges.forEach(b=>tags.push({label:b,val:b,type:'badge'}));
+  if(maxPrice<5000)tags.push({label:`Under ₹${Number(maxPrice).toLocaleString('en-IN')}`,val:'price',type:'price'});
+  if(inStockOnly)tags.push({label:'In Stock Only',val:'instock',type:'stock'});
+  document.getElementById('active-filters').innerHTML=tags.map(t=>`
+    <div class="filter-tag">${t.label}<button onclick="removeFilter('${t.type}','${t.val}')">✕</button></div>`).join('');
+}
+function removeFilter(type,val){
+  if(type==='cat'||type==='mat'||type==='badge'){
+    const cb=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].find(c=>c.value===val);
+    if(cb)cb.checked=false;
+  }
+  if(type==='price'){document.getElementById('price-slider').value=5000;updatePriceLabel();}
+  if(type==='stock'){document.getElementById('f-instock').checked=false;}
+  applyFilters();
+}
+function clearFilters(){
+  document.querySelectorAll('.filter-panel input[type=checkbox]').forEach(c=>c.checked=false);
+  document.getElementById('price-slider').value=5000;updatePriceLabel();
+  applyFilters();
+}
+
+// ═══════════════════════════════════════
+// PRODUCT CARD HTML
+// ═══════════════════════════════════════
+function prodCardHTML(p){
+  const stock=getStock(p.id);
+  const soldOut=stock<=0;
+  const low=stock>0&&stock<=(p.lowAt||5);
+  return`<div class="p-card" style="${soldOut?'opacity:.75':''}">
+    <div class="p-card-img" onclick="showProduct('${p.id}','${p.cat}','${p.mat}')" style="cursor:pointer">
+      ${p.images&&p.images[0]?`<img src="${p.images[0]}" alt="${p.name}">`:`<span class="p-card-icon">${p.icon||'👓'}</span>`}
+      ${p.badge?`<div class="p-badge${p.badge==='Sale'?' sale':p.badge==='Best Seller'?' bestseller':''}">${p.badge}</div>`:''}
+      ${soldOut?`<div class="p-soldout-overlay"><div class="p-soldout-label">Sold Out</div></div>`:''}
+    </div>
+    <div class="p-card-body">
+      <div class="p-card-name" onclick="showProduct('${p.id}','${p.cat}','${p.mat}')">${p.name}</div>
+      <div class="p-card-meta">${CAT_LABELS[p.cat]} · ${MAT_LABELS[p.mat]}</div>
+      <div class="p-colors">${(p.colors||[]).slice(0,6).map(c=>`<div class="p-color-dot" style="background:${c.hex}" title="${c.name}"></div>`).join('')}${(p.colors||[]).length>6?`<span style="font-size:10px;color:var(--mid)">+${p.colors.length-6}</span>`:''}</div>
+      <div class="p-prices"><span class="p-price">₹${p.price.toLocaleString('en-IN')}</span>${p.oldPrice?`<span class="p-old">₹${p.oldPrice.toLocaleString('en-IN')}</span>`:''}</div>
+      ${low?`<div class="p-lowstock">Only ${stock} left!</div>`:''}
+      <button class="p-add" onclick="${soldOut?'':(`addCart('${p.id}','${p.cat}','${p.mat}',0,1)`)}" ${soldOut?'disabled':''}>${soldOut?'Sold Out':'Add to Cart'}</button>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════
+// PRODUCT DETAIL
+// ═══════════════════════════════════════
+function findProduct(id,cat,mat){
+  if(cat&&mat){const p=makeProducts(cat,mat).find(x=>x.id===id);if(p)return p;}
+  for(const c of['men','women','kids','unisex'])for(const m of['titanium','metal','acetate','tr']){
+    const p=makeProducts(c,m).find(x=>x.id===id);if(p)return p;
+  }
+  return null;
+}
+
+function showProduct(id,cat,mat){
+  currentProduct=findProduct(id,cat,mat);
+  if(!currentProduct)return;
+  selColor=0;pdQty=1;
+  renderProductDetail();
+  go('product');
+}
+
+function renderProductDetail(){
+  const p=currentProduct;
+  document.getElementById('pd-breadcrumb').innerHTML=
+    `<a onclick="go('home')">Home</a><span>/</span><a onclick="go('${p.cat}')">${CAT_LABELS[p.cat]}</a><span>/</span><a onclick="goMat('${p.cat}','${p.mat}')">${MAT_LABELS[p.mat]}</a><span>/</span>${p.name}`;
+  document.getElementById('pd-mat-tag').textContent=`${CAT_LABELS[p.cat]} · ${MAT_LABELS[p.mat]}`;
+  document.getElementById('pd-name').textContent=p.name;
+  document.getElementById('pd-meta').textContent=`${MAT_LABELS[p.mat]} · ${(p.colors||[])[selColor]?.name||''}`;
+  document.getElementById('pd-price-row').innerHTML=`
+    <span class="pd-price">₹${p.price.toLocaleString('en-IN')}</span>
+    ${p.oldPrice?`<span class="pd-old">₹${p.oldPrice.toLocaleString('en-IN')}</span><span class="pd-save">Save ₹${(p.oldPrice-p.price).toLocaleString('en-IN')}</span>`:''}`;
+  // Main image
+  const mainEl=document.getElementById('pd-main');
+  mainEl.innerHTML=p.images&&p.images[0]?`<img src="${p.images[selColor]||p.images[0]}" alt="${p.name}">`:`<span style="font-size:120px">${p.icon||'👓'}</span>`;
+  // Thumbs
+  document.getElementById('pd-thumbs').innerHTML=(p.colors||[]).map((c,i)=>`
+    <div class="pd-thumb${i===selColor?' active':''}" onclick="selColorFn(${i})" style="background:${c.hex}22">
+      <div style="width:34px;height:34px;border-radius:50%;background:${c.hex};border:1px solid rgba(0,0,0,.12)"></div>
+    </div>`).join('');
+  // Colors
+  document.getElementById('pd-colors').innerHTML=(p.colors||[]).map((c,i)=>`
+    <div class="pd-color-opt${i===selColor?' active':''}" onclick="selColorFn(${i})">
+      <div class="pd-swatch" style="background:${c.hex}"></div>
+      <span>${c.name}</span>
+    </div>`).join('');
+  document.getElementById('pd-qty').value=pdQty;
+  // Stock
+  const stock=getStock(p.id);
+  const soldOut=stock<=0;
+  const low=stock>0&&stock<=(p.lowAt||5);
+  document.getElementById('pd-stock-msg').innerHTML=
+    soldOut?`<span style="color:var(--red);font-weight:500">Currently sold out</span>`:
+    low?`<span style="color:#b86a00;font-weight:500">Only ${stock} left in stock!</span>`:'';
+  document.getElementById('pd-actions').innerHTML=`
+    <button class="pd-cart-btn" onclick="pdAddCart()" ${soldOut?'disabled':''}>Add to Cart</button>
+    <button class="pd-buy-btn" onclick="pdBuyNow()" ${soldOut?'disabled':''}>Buy Now →</button>`;
+  // Specs
+  document.getElementById('pd-specs').innerHTML=`
+    <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px">Specifications</div>
+    ${Object.entries(p.details||{}).map(([k,v])=>`<div class="pd-spec-row"><span>${k}</span><span>${v}</span></div>`).join('')}`;
+}
+
+function selColorFn(i){
+  selColor=i;
+  const p=currentProduct;
+  document.getElementById('pd-meta').textContent=`${MAT_LABELS[p.mat]} · ${(p.colors||[])[i]?.name||''}`;
+  document.querySelectorAll('.pd-thumb').forEach((t,j)=>t.classList.toggle('active',j===i));
+  document.querySelectorAll('.pd-color-opt').forEach((o,j)=>o.classList.toggle('active',j===i));
+  if(p.images&&p.images[i]){
+    const m=document.getElementById('pd-main');
+    m.innerHTML=`<img src="${p.images[i]}" alt="${p.name}">`;
+  }
+}
+function chQty(d){pdQty=Math.max(1,Math.min(10,pdQty+d));document.getElementById('pd-qty').value=pdQty;}
+function pdAddCart(){if(currentProduct)addCart(currentProduct.id,currentProduct.cat,currentProduct.mat,selColor,pdQty);}
+function pdBuyNow(){if(currentProduct){addCart(currentProduct.id,currentProduct.cat,currentProduct.mat,selColor,pdQty);goCheckout();}}
+
+// ═══════════════════════════════════════
+// CART
+// ═══════════════════════════════════════
+let cart=[];
+function addCart(id,cat,mat,colorIdx,qty){
+  const p=findProduct(id,cat,mat);if(!p)return;
+  const key=`${id}-${colorIdx}`;
+  const ex=cart.find(c=>c.key===key);
+  if(ex)ex.qty+=qty;
+  else cart.push({key,p,colorIdx,qty});
+  renderCart();
+  showToast(`${p.name} (${(p.colors||[])[colorIdx]?.name||''}) added to cart`);
+}
+function renderCart(){
+  const count=cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cart-count').textContent=count;
+  const body=document.getElementById('cart-body');
+  if(!cart.length){
+    body.innerHTML=`<div class="cart-empty"><div style="font-size:48px;margin-bottom:12px">🛍</div><p>Your cart is empty</p></div>`;
+    document.getElementById('cart-foot').style.display='none';return;
+  }
+  body.innerHTML=cart.map(c=>`
+    <div class="c-item">
+      <div class="c-item-img" style="background:${(c.p.colors||[])[c.colorIdx]?.hex||'#f5ede3'}22">
+        ${c.p.images&&c.p.images[0]?`<img src="${c.p.images[0]}" alt="${c.p.name}">`:`<span>${c.p.icon||'👓'}</span>`}
+      </div>
+      <div class="c-item-info">
+        <div class="c-item-name">${c.p.name}</div>
+        <div class="c-item-meta">${(c.p.colors||[])[c.colorIdx]?.name||''} · ${MAT_LABELS[c.p.mat]}</div>
+        <div class="c-item-row">
+          <button class="c-qty-btn" onclick="cartQty('${c.key}',-1)">−</button>
+          <span class="c-qty-num">${c.qty}</span>
+          <button class="c-qty-btn" onclick="cartQty('${c.key}',1)">+</button>
+          <span class="c-item-price">₹${(c.p.price*c.qty).toLocaleString('en-IN')}</span>
+          <button class="c-remove" onclick="cartRemove('${c.key}')">Remove</button>
+        </div>
+      </div>
+    </div>`).join('');
+  const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
+  document.getElementById('c-sub').textContent='₹'+sub.toLocaleString('en-IN');
+  document.getElementById('c-total').textContent='₹'+sub.toLocaleString('en-IN');
+  document.getElementById('cart-foot').style.display='block';
+}
+function cartQty(key,d){const i=cart.find(c=>c.key===key);if(!i)return;i.qty+=d;if(i.qty<=0)cart=cart.filter(c=>c.key!==key);renderCart();}
+function cartRemove(key){cart=cart.filter(c=>c.key!==key);renderCart();}
+function toggleCart(){
+  document.getElementById('cart-overlay').classList.toggle('open');
+  document.getElementById('cart-sidebar').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════
+// CHECKOUT
+// ═══════════════════════════════════════
+let payMethod='rzp';
+function goCheckout(){
+  if(!cart.length){showToast('Your cart is empty');return;}
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-sidebar').classList.remove('open');
+  const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
+  const tax=Math.round(sub*.18);
+  document.getElementById('co-items').innerHTML=cart.map(c=>`
+    <div class="co-item">
+      <div class="co-item-img">${c.p.images&&c.p.images[0]?`<img src="${c.p.images[0]}">`:`<span>${c.p.icon||'👓'}</span>`}</div>
+      <div style="flex:1"><div class="co-item-name">${c.p.name}</div><div class="co-item-meta">${(c.p.colors||[])[c.colorIdx]?.name||''} · Qty ${c.qty}</div></div>
+      <div class="co-item-price">₹${(c.p.price*c.qty).toLocaleString('en-IN')}</div>
+    </div>`).join('');
+  document.getElementById('co-sub').textContent='₹'+sub.toLocaleString('en-IN');
+  document.getElementById('co-tax').textContent='₹'+tax.toLocaleString('en-IN');
+  document.getElementById('co-total').textContent='₹'+(sub+tax).toLocaleString('en-IN');
+  go('checkout');
+}
+function selPay(m){
+  payMethod=m;
+  document.getElementById('po-rzp').classList.toggle('sel',m==='rzp');
+  document.getElementById('po-pp').classList.toggle('sel',m==='pp');
+}
+function placeOrder(){
+  const fname=document.getElementById('co-fname').value.trim();
+  const email=document.getElementById('co-email').value.trim();
+  const address=document.getElementById('co-address').value.trim();
+  if(!fname||!email||!address){showToast('Please fill in name, email and address');return;}
+  const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
+  const tax=Math.round(sub*.18);
+  const ord='MD'+Date.now().toString().slice(-6);
+  document.getElementById('success-card').innerHTML=`
+    <div class="success-row"><span>Order #</span><span>${ord}</span></div>
+    <div class="success-row"><span>Name</span><span>${fname}</span></div>
+    <div class="success-row"><span>Email</span><span>${email}</span></div>
+    <div class="success-row"><span>Payment</span><span>${payMethod==='rzp'?'Razorpay':'PayPal'}</span></div>
+    <div class="success-row"><span>Items</span><span>${cart.reduce((s,c)=>s+c.qty,0)}</span></div>
+    <div class="success-row"><span>Total Paid</span><span>₹${(sub+tax).toLocaleString('en-IN')}</span></div>`;
+  cart=[];renderCart();
+  go('success');
+}
+
+// ═══════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+buildCarousel();
+renderCart();
+startAuto();
+</script>
+</body>
+</html>
