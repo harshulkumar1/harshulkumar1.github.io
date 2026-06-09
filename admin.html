@@ -915,17 +915,31 @@ function autoSKU(cat,mat){ return `MD-${cat.toUpperCase().slice(0,3)}-${mat.toUp
 
 // ═══════════════════════════ BULK CSV ═══════════════════════════
 let csvRows=[];
-const CSV_COLS=['name','sku','category','material','price','oldPrice','badge','stock','lowStockAt','description','lensWidth','bridge','temple','weight','lensType','Color1Name','Color1Hex','Color2Name','Color2Hex','Color3Name','Color3Hex','Color4Name','Color4Hex','Color5Name','Color5Hex','Color6Name','Color6Hex','Color7Name','Color7Hex','Color8Name','Color8Hex'];
+const CSV_COLS=['name','sku','category','material','price','oldPrice','badge','stock','lowStockAt','description','lensWidth','bridge','temple','weight','lensType',
+  'Color1Name','Color1Hex','Color1Img1','Color1Img2','Color1Img3',
+  'Color2Name','Color2Hex','Color2Img1','Color2Img2','Color2Img3',
+  'Color3Name','Color3Hex','Color3Img1','Color3Img2','Color3Img3',
+  'Color4Name','Color4Hex','Color4Img1','Color4Img2','Color4Img3',
+  'Color5Name','Color5Hex','Color5Img1','Color5Img2','Color5Img3',
+  'Color6Name','Color6Hex','Color6Img1','Color6Img2','Color6Img3',
+  'Color7Name','Color7Hex','Color7Img1','Color7Img2','Color7Img3',
+  'Color8Name','Color8Hex','Color8Img1','Color8Img2','Color8Img3',
+];
 
 function downloadTemplate(){
   const header=CSV_COLS.join(',');
   const example=[
-    'Aviator Classic','MD-MEN-TI-001','men','titanium','2499','3200','New','50','5','Lightweight slim profile','52mm','18mm','145mm','12g','Single Vision','Black','#1a1a1a','Silver','#c0c0c8','Gold','#c9a07a','Rose Gold','#d4a0a0','','','','','','','',''
+    'Aviator Classic','MD-MEN-TI-001','men','titanium','2499','3200','New','50','5','Lightweight slim profile','52mm','18mm','145mm','12g','Single Vision',
+    'Black','#1a1a1a','https://yoursite.com/images/aviator-black-1.jpg','https://yoursite.com/images/aviator-black-2.jpg','',
+    'Gold','#c9a07a','https://yoursite.com/images/aviator-gold-1.jpg','https://yoursite.com/images/aviator-gold-2.jpg','https://yoursite.com/images/aviator-gold-3.jpg',
+    'Silver','#c0c0c8','https://yoursite.com/images/aviator-silver-1.jpg','','',
+    'Rose Gold','#d4a0a0','','','',
+    '','','','','',
+    '','','','','',
+    '','','','','',
+    '','','','','',
   ].join(',');
-  const example2=[
-    'Cat Eye Slim','MD-WOM-TI-001','women','titanium','2950','','','100','5','Elegant cat eye frame','50mm','16mm','140mm','10g','Single Vision','Rose Gold','#d4a0a0','Gold','#c9a07a','Black','#1a1a1a','Lilac','#c0a8d4','Clear','#e8e0d8','','','','','','',''
-  ].join(',');
-  const csv=header+'\n'+example+'\n'+example2;
+  const csv=header+'\n'+example;
   dlFile(csv,'marche-products-template.csv','text/csv');
 }
 
@@ -1007,8 +1021,13 @@ async function importCSV(){
   for(let i=0;i<valid.length;i++){
     const p=valid[i].row;
     const colors=[];
+    const colorImages=[];
     for(let n=1;n<=8;n++){
-      if(p[`Color${n}Name`]) colors.push({name:p[`Color${n}Name`],hex:p[`Color${n}Hex`]||'#888888'});
+      if(p[`Color${n}Name`]){
+        colors.push({name:p[`Color${n}Name`],hex:p[`Color${n}Hex`]||'#888888'});
+        const imgs=[p[`Color${n}Img1`],p[`Color${n}Img2`],p[`Color${n}Img3`]].filter(x=>x&&x.trim());
+        colorImages.push(imgs);
+      }
     }
     const id='p'+Date.now()+i;
     const prod={
@@ -1024,6 +1043,7 @@ async function importCSV(){
       stock:Number(p.stock)||0,
       lowAt:Number(p.lowStockAt)||5,
       images:[],
+      colorImages,
       colors,
       details:{
         'Frame Material':p.material.charAt(0).toUpperCase()+p.material.slice(1),
@@ -1146,12 +1166,15 @@ function markAllInStock(){
 }
 
 // ═══════════════════════════ EDIT MODAL ═══════════════════════════
-let modalColors=[];
+let modalColors=[], modalColorImages=[];
 function openModal(id){
   const p=products.find(x=>x.id===id);
   if(!p) return;
   editingId=id;
   modalColors=[...(p.colors||[])];
+  modalColorImages=(p.colorImages||[]).map(imgs=>[...(imgs||[])]);
+  // Pad to match colours length
+  while(modalColorImages.length<modalColors.length) modalColorImages.push([]);
   document.getElementById('m-name').value=p.name;
   document.getElementById('m-sku').value=p.sku||'';
   document.getElementById('m-desc').value=p.desc||'';
@@ -1171,19 +1194,38 @@ function addModalChip(){
   const name=document.getElementById('m-cname').value.trim();
   if(!name) return;
   modalColors.push({hex,name});
+  modalColorImages.push([]);
   document.getElementById('m-cname').value='';
   renderModalChips();
 }
-function removeModalChip(i){ modalColors.splice(i,1); renderModalChips(); }
+function removeModalChip(i){
+  modalColors.splice(i,1);
+  modalColorImages.splice(i,1);
+  renderModalChips();
+}
 function renderModalChips(){
   document.getElementById('m-chips').innerHTML=modalColors.map((c,i)=>`
-    <div class="chip"><span class="chip-swatch" style="background:${c.hex}"></span><span class="chip-name">${c.name}</span><button class="chip-del" onclick="removeModalChip(${i})">✕</button></div>
+    <div class="chip" style="flex-direction:column;align-items:flex-start;gap:8px;padding:10px;width:100%">
+      <div style="display:flex;align-items:center;gap:8px;width:100%">
+        <span class="chip-swatch" style="background:${c.hex}"></span>
+        <span class="chip-name" style="font-weight:500">${c.name}</span>
+        <button class="chip-del" onclick="removeModalChip(${i})" style="margin-left:auto">✕ Remove</button>
+      </div>
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--mid);margin-bottom:4px">Images for ${c.name} (paste URLs, one per line)</div>
+      <textarea id="m-imgs-${i}" style="width:100%;min-height:64px;border:1px solid var(--border);background:var(--bg);padding:7px 10px;font-size:11px;font-family:'DM Sans',sans-serif;resize:vertical" placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg&#10;https://example.com/image3.jpg">${(modalColorImages[i]||[]).join('\n')}</textarea>
+    </div>
   `).join('');
 }
 function saveModal(){
   const id=editingId;
   const idx=products.findIndex(p=>p.id===id);
   if(idx<0) return;
+  // Collect colour images from textareas
+  const colorImages=modalColors.map((_,i)=>{
+    const ta=document.getElementById('m-imgs-'+i);
+    if(!ta) return [];
+    return ta.value.split('\n').map(u=>u.trim()).filter(u=>u);
+  });
   products[idx]={
     ...products[idx],
     name:document.getElementById('m-name').value.trim(),
@@ -1196,6 +1238,7 @@ function saveModal(){
     oldPrice:document.getElementById('m-oldprice').value?Number(document.getElementById('m-oldprice').value):null,
     lowAt:Number(document.getElementById('m-lowat').value)||5,
     colors:[...modalColors],
+    colorImages,
   };
   const st=document.getElementById('m-stock').value;
   if(st!=='') stockData[id]=Number(st);

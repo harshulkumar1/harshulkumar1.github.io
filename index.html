@@ -4,6 +4,29 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marché Designs — Premium Italian Frames</title>
+<meta name="description" content="Premium handcrafted Italian spectacles — designed for comfort, refined for style. Shop Men, Women, Kids and Unisex frames in Titanium, Metal, Acetate and TR.">
+<meta name="keywords" content="spectacles, eyeglasses, frames, titanium frames, acetate frames, Italian glasses, Marche Designs">
+<meta name="author" content="Marché Designs">
+
+<!-- Favicon — replace the href with your actual image URL after uploading to GitHub -->
+<link rel="icon" type="image/png" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
+
+<!-- Open Graph — controls image shown on Google, WhatsApp, Instagram link previews -->
+<meta property="og:title" content="Marché Designs — Premium Italian Frames">
+<meta property="og:description" content="Premium handcrafted Italian spectacles — Titanium, Metal, Acetate & TR frames for Men, Women, Kids and Unisex.">
+<meta property="og:image" content="https://marchedesigns.com/images/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://marchedesigns.com">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Marché Designs">
+
+<!-- Twitter/X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Marché Designs — Premium Italian Frames">
+<meta name="twitter:description" content="Premium handcrafted Italian spectacles for Men, Women, Kids and Unisex.">
+<meta name="twitter:image" content="https://marchedesigns.com/images/og-image.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -212,8 +235,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .p-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
 .p-card{background:var(--white);border:1px solid var(--border);overflow:hidden;transition:border-color .2s}
 .p-card:hover{border-color:var(--dark)}
-.p-card-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;background:var(--peach)}
-.p-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.p-card-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;background:#f0f0f0}
+.p-card-img img{width:100%;height:100%;object-fit:contain;transition:transform .4s;padding:8%}
 .p-card:hover .p-card-img img{transform:scale(1.04)}
 .p-card-icon{font-size:72px;transition:transform .3s}
 .p-card:hover .p-card-icon{transform:scale(1.08)}
@@ -264,15 +287,66 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .filter-tag button{background:none;border:none;color:rgba(255,255,255,.7);font-size:14px;line-height:1;padding:0;cursor:pointer}
 .filter-tag button:hover{color:var(--white)}
 
-/* ── PRODUCT DETAIL ── */
+/* ── PRODUCT DETAIL GALLERY ── */
 .pd-wrap{max-width:1300px;margin:0 auto;padding:40px 80px 60px;display:grid;grid-template-columns:1fr 1fr;gap:64px}
-.pd-gallery{}
-.pd-main{aspect-ratio:1;background:var(--peach);display:flex;align-items:center;justify-content:center;font-size:120px;overflow:hidden;margin-bottom:12px}
-.pd-main img{width:100%;height:100%;object-fit:cover}
-.pd-thumbs{display:flex;gap:8px;flex-wrap:wrap}
-.pd-thumb{width:70px;height:70px;background:var(--peach);border:2px solid transparent;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;overflow:hidden;transition:border-color .2s}
-.pd-thumb.active{border-color:var(--dark)}
-.pd-thumb img{width:100%;height:100%;object-fit:cover}
+.pd-gallery{display:flex;flex-direction:column;gap:10px}
+.pd-main-wrap{position:relative;aspect-ratio:1;background:#f0f0f0;overflow:hidden;cursor:zoom-in;border:1px solid var(--border)}
+.pd-main-wrap img{width:100%;height:100%;object-fit:contain;transition:transform .4s;padding:6%}
+.pd-main-wrap:hover img{transform:scale(1.04)}
+.pd-main-wrap .pd-zoom-hint{position:absolute;bottom:12px;right:12px;background:rgba(42,31,26,.55);color:#fff;font-size:10px;letter-spacing:1px;padding:5px 10px;text-transform:uppercase;opacity:0;transition:opacity .2s}
+.pd-main-wrap:hover .pd-zoom-hint{opacity:1}
+.pd-main-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:120px}
+.pd-thumbs-row{display:flex;gap:8px;flex-wrap:wrap}
+.pd-thumb-item{width:72px;height:72px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:border-color .2s;flex-shrink:0;background:#f0f0f0}
+.pd-thumb-item.active{border-color:var(--dark)}
+.pd-thumb-item img{width:100%;height:100%;object-fit:contain;padding:8%}
+.pd-thumb-item.color-swatch-thumb{display:flex;align-items:center;justify-content:center}
+
+/* ── LIGHTBOX ── */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:800;display:none;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox-img{max-width:90vw;max-height:90vh;object-fit:contain}
+.lightbox-close{position:absolute;top:20px;right:24px;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;z-index:801}
+.lightbox-prev,.lightbox-next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.15);border:none;color:#fff;font-size:24px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .2s}
+.lightbox-prev{left:16px}.lightbox-next{right:16px}
+.lightbox-prev:hover,.lightbox-next:hover{background:rgba(255,255,255,.3)}
+.lightbox-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-size:12px;letter-spacing:1px}
+
+/* ── METALLIC SWATCHES ── */
+.swatch-gold{background:linear-gradient(135deg,#c8a84b 0%,#f5d36e 30%,#c8a84b 55%,#f0c040 75%,#a07828 100%)}
+.swatch-silver{background:linear-gradient(135deg,#8a8a8a 0%,#d4d4d4 30%,#9a9a9a 55%,#e0e0e0 75%,#7a7a7a 100%)}
+.swatch-rosegold{background:linear-gradient(135deg,#b8726a 0%,#e8b4a8 30%,#c07870 55%,#f0c8bc 75%,#a06060 100%)}
+.swatch-gunmetal{background:linear-gradient(135deg,#3a3a42 0%,#6a6a72 30%,#3a3a42 55%,#5a5a62 75%,#2a2a32 100%)}
+.swatch-bronze{background:linear-gradient(135deg,#6a4a10 0%,#b88030 30%,#7a5418 55%,#c89040 75%,#5a3a08 100%)}
+.swatch-chrome{background:linear-gradient(135deg,#a0a0a8 0%,#e0e0e8 25%,#b0b0b8 50%,#f0f0f8 75%,#9090a0 100%)}
+.swatch-titanium{background:linear-gradient(135deg,#5a5a62 0%,#9a9aa2 30%,#6a6a72 55%,#aaaab2 75%,#4a4a52 100%)}
+
+/* ── COLOUR SWATCHES on product cards ── */
+.p-color-dot.metallic-gold{background:linear-gradient(135deg,#c8a84b,#f5d36e,#c8a84b)}
+.p-color-dot.metallic-silver{background:linear-gradient(135deg,#8a8a8a,#d4d4d4,#8a8a8a)}
+.p-color-dot.metallic-rosegold{background:linear-gradient(135deg,#b8726a,#e8b4a8,#b8726a)}
+.p-color-dot.metallic-gunmetal{background:linear-gradient(135deg,#3a3a42,#6a6a72,#3a3a42)}
+.p-color-dot.metallic-bronze{background:linear-gradient(135deg,#6a4a10,#b88030,#6a4a10)}
+.pd-swatch.metallic-gold{background:linear-gradient(135deg,#c8a84b 0%,#f5d36e 30%,#c8a84b 55%,#f0c040 75%,#a07828 100%)}
+.pd-swatch.metallic-silver{background:linear-gradient(135deg,#8a8a8a 0%,#d4d4d4 30%,#9a9a9a 55%,#e0e0e0 75%,#7a7a7a 100%)}
+.pd-swatch.metallic-rosegold{background:linear-gradient(135deg,#b8726a 0%,#e8b4a8 30%,#c07870 55%,#f0c8bc 75%,#a06060 100%)}
+.pd-swatch.metallic-gunmetal{background:linear-gradient(135deg,#3a3a42 0%,#6a6a72 30%,#3a3a42 55%,#5a5a62 75%,#2a2a32 100%)}
+.pd-swatch.metallic-bronze{background:linear-gradient(135deg,#6a4a10 0%,#b88030 30%,#7a5418 55%,#c89040 75%,#5a3a08 100%)}
+.pd-swatch.metallic-titanium{background:linear-gradient(135deg,#5a5a62 0%,#9a9aa2 30%,#6a6a72 55%,#aaaab2 75%,#4a4a52 100%)}
+.pd-swatch.metallic-chrome{background:linear-gradient(135deg,#a0a0a8 0%,#e0e0e8 25%,#b0b0b8 50%,#f0f0f8 75%,#9090a0 100%)}
+/* Tortoise pattern */
+.swatch-tortoise{background:repeating-linear-gradient(45deg,#7a4a1a 0px,#5a2a0a 8px,#8a5a20 16px,#7a4a1a 24px)}
+.pd-swatch.metallic-tortoise{background:repeating-linear-gradient(45deg,#7a4a1a 0px,#5a2a0a 8px,#8a5a20 16px,#7a4a1a 24px)}
+/* Clear/transparent */
+.pd-swatch.metallic-clear{background:linear-gradient(135deg,rgba(232,224,216,.4) 0%,rgba(255,255,255,.8) 50%,rgba(232,224,216,.4) 100%);border:1.5px solid var(--border)!important}
+
+@media(max-width:768px){
+  .pd-wrap{grid-template-columns:1fr;padding:16px 16px 40px;gap:24px}
+  .pd-thumbs-row{gap:6px}
+  .pd-thumb-item{width:56px;height:56px}
+  .lightbox-prev{left:6px}.lightbox-next{right:6px}
+}
+
 .pd-info{padding-top:4px}
 .pd-mat-tag{display:inline-block;background:var(--peach);color:var(--accent-dark);font-size:11px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;margin-bottom:16px}
 .pd-name{font-family:'Cormorant Garamond',serif;font-size:42px;font-weight:300;line-height:1.1;margin-bottom:8px}
@@ -974,8 +1048,11 @@ footer{background:var(--dark);color:rgba(253,246,240,.5);padding:48px 40px}
   <div class="breadcrumb" id="pd-breadcrumb"></div>
   <div class="pd-wrap">
     <div class="pd-gallery">
-      <div class="pd-main" id="pd-main"></div>
-      <div class="pd-thumbs" id="pd-thumbs"></div>
+      <div class="pd-main-wrap" id="pd-main-wrap" onclick="openLightbox()">
+        <div id="pd-main" class="pd-main-placeholder"></div>
+        <div class="pd-zoom-hint">Click to zoom</div>
+      </div>
+      <div class="pd-thumbs-row" id="pd-thumbs"></div>
     </div>
     <div class="pd-info">
       <div id="pd-mat-tag" class="pd-mat-tag"></div>
@@ -996,6 +1073,15 @@ footer{background:var(--dark);color:rgba(253,246,240,.5);padding:48px 40px}
     </div>
   </div>
   <div id="product-footer"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" onclick="lightboxNav(-1)">&#8592;</button>
+  <img class="lightbox-img" id="lightbox-img" src="" alt="">
+  <button class="lightbox-next" onclick="lightboxNav(1)">&#8594;</button>
+  <div class="lightbox-counter" id="lightbox-counter"></div>
 </div>
 
 <!-- ════════════════ CHECKOUT ════════════════ -->
@@ -1470,12 +1556,33 @@ function prodCardHTML(p){
     <div class="p-card-body">
       <div class="p-card-name" onclick="showProduct('${p.id}','${p.cat}','${p.mat}')">${p.name}</div>
       <div class="p-card-meta">${CAT_LABELS[p.cat]} · ${MAT_LABELS[p.mat]}</div>
-      <div class="p-colors">${(p.colors||[]).slice(0,6).map(c=>`<div class="p-color-dot" style="background:${c.hex}" title="${c.name}"></div>`).join('')}${(p.colors||[]).length>6?`<span style="font-size:10px;color:var(--mid)">+${p.colors.length-6}</span>`:''}</div>
+      <div class="p-colors">${(p.colors||[]).slice(0,6).map(c=>{
+        const sc=getSwatchClass(c.name);
+        return`<div class="p-color-dot${sc?' '+sc:''}" style="${sc?'':('background:'+c.hex)}" title="${c.name}"></div>`;
+      }).join('')}${(p.colors||[]).length>6?`<span style="font-size:10px;color:var(--mid)">+${p.colors.length-6}</span>`:''}</div>
       <div class="p-prices"><span class="p-price">₹${p.price.toLocaleString('en-IN')}</span>${p.oldPrice?`<span class="p-old">₹${p.oldPrice.toLocaleString('en-IN')}</span>`:''}</div>
       ${low?`<div class="p-lowstock">Only ${stock} left!</div>`:''}
       <button class="p-add" onclick="${soldOut?'':(`addCart('${p.id}','${p.cat}','${p.mat}',0,1)`)}" ${soldOut?'disabled':''}>${soldOut?'Sold Out':'Add to Cart'}</button>
     </div>
   </div>`;
+}
+
+// ═══════════════════════════════════════
+// METALLIC SWATCH HELPER
+// ═══════════════════════════════════════
+const METALLIC_NAMES = ['gold','silver','rosegold','rose gold','gunmetal','bronze','titanium','chrome','tortoise','clear'];
+function getSwatchClass(name){
+  const n=(name||'').toLowerCase().replace(/\s/g,'');
+  if(n.includes('gold')&&n.includes('rose')) return 'metallic-rosegold';
+  if(n.includes('gold')) return 'metallic-gold';
+  if(n.includes('silver')) return 'metallic-silver';
+  if(n.includes('gunmetal')) return 'metallic-gunmetal';
+  if(n.includes('bronze')) return 'metallic-bronze';
+  if(n.includes('titanium')) return 'metallic-titanium';
+  if(n.includes('chrome')) return 'metallic-chrome';
+  if(n.includes('tortoise')||n.includes('havana')) return 'metallic-tortoise';
+  if(n.includes('clear')||n.includes('transparent')) return 'metallic-clear';
+  return '';
 }
 
 // ═══════════════════════════════════════
@@ -1492,9 +1599,24 @@ function findProduct(id,cat,mat){
 function showProduct(id,cat,mat){
   currentProduct=findProduct(id,cat,mat);
   if(!currentProduct)return;
-  selColor=0;pdQty=1;
+  selColor=0;pdQty=1;selImg=0;
   renderProductDetail();
   go('product');
+}
+
+// Current image index within selected colour's images
+let selImg=0;
+
+function getColorImages(p, colorIdx){
+  // Per-colour images: stored as p.colorImages[colorIdx] = [url1, url2, ...]
+  // Falls back to p.images array, then placeholder
+  if(p.colorImages && p.colorImages[colorIdx] && p.colorImages[colorIdx].length){
+    return p.colorImages[colorIdx];
+  }
+  if(p.images && p.images.length){
+    return p.images;
+  }
+  return [];
 }
 
 function renderProductDetail(){
@@ -1503,24 +1625,11 @@ function renderProductDetail(){
     `<a onclick="go('home')">Home</a><span>/</span><a onclick="go('${p.cat}')">${CAT_LABELS[p.cat]}</a><span>/</span><a onclick="goMat('${p.cat}','${p.mat}')">${MAT_LABELS[p.mat]}</a><span>/</span>${p.name}`;
   document.getElementById('pd-mat-tag').textContent=`${CAT_LABELS[p.cat]} · ${MAT_LABELS[p.mat]}`;
   document.getElementById('pd-name').textContent=p.name;
-  document.getElementById('pd-meta').textContent=`${MAT_LABELS[p.mat]} · ${(p.colors||[])[selColor]?.name||''}`;
   document.getElementById('pd-price-row').innerHTML=`
     <span class="pd-price">₹${p.price.toLocaleString('en-IN')}</span>
     ${p.oldPrice?`<span class="pd-old">₹${p.oldPrice.toLocaleString('en-IN')}</span><span class="pd-save">Save ₹${(p.oldPrice-p.price).toLocaleString('en-IN')}</span>`:''}`;
-  // Main image
-  const mainEl=document.getElementById('pd-main');
-  mainEl.innerHTML=p.images&&p.images[0]?`<img src="${p.images[selColor]||p.images[0]}" alt="${p.name}">`:`<span style="font-size:120px">${p.icon||'👓'}</span>`;
-  // Thumbs
-  document.getElementById('pd-thumbs').innerHTML=(p.colors||[]).map((c,i)=>`
-    <div class="pd-thumb${i===selColor?' active':''}" onclick="selColorFn(${i})" style="background:${c.hex}22">
-      <div style="width:34px;height:34px;border-radius:50%;background:${c.hex};border:1px solid rgba(0,0,0,.12)"></div>
-    </div>`).join('');
-  // Colors
-  document.getElementById('pd-colors').innerHTML=(p.colors||[]).map((c,i)=>`
-    <div class="pd-color-opt${i===selColor?' active':''}" onclick="selColorFn(${i})">
-      <div class="pd-swatch" style="background:${c.hex}"></div>
-      <span>${c.name}</span>
-    </div>`).join('');
+  renderGallery();
+  renderColorSwatches();
   document.getElementById('pd-qty').value=pdQty;
   // Stock
   const stock=getStock(p.id);
@@ -1532,23 +1641,112 @@ function renderProductDetail(){
   document.getElementById('pd-actions').innerHTML=`
     <button class="pd-cart-btn" onclick="pdAddCart()" ${soldOut?'disabled':''}>Add to Cart</button>
     <button class="pd-buy-btn" onclick="pdBuyNow()" ${soldOut?'disabled':''}>Buy Now →</button>`;
-  // Specs
   document.getElementById('pd-specs').innerHTML=`
     <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:14px">Specifications</div>
     ${Object.entries(p.details||{}).map(([k,v])=>`<div class="pd-spec-row"><span>${k}</span><span>${v}</span></div>`).join('')}`;
 }
 
-function selColorFn(i){
-  selColor=i;
+function renderGallery(){
   const p=currentProduct;
-  document.getElementById('pd-meta').textContent=`${MAT_LABELS[p.mat]} · ${(p.colors||[])[i]?.name||''}`;
-  document.querySelectorAll('.pd-thumb').forEach((t,j)=>t.classList.toggle('active',j===i));
-  document.querySelectorAll('.pd-color-opt').forEach((o,j)=>o.classList.toggle('active',j===i));
-  if(p.images&&p.images[i]){
-    const m=document.getElementById('pd-main');
-    m.innerHTML=`<img src="${p.images[i]}" alt="${p.name}">`;
+  const imgs=getColorImages(p,selColor);
+  const colorName=(p.colors||[])[selColor]?.name||'';
+  document.getElementById('pd-meta').textContent=`${MAT_LABELS[p.mat]} · ${colorName}`;
+
+  // Main image
+  const mainEl=document.getElementById('pd-main');
+  if(imgs.length){
+    mainEl.innerHTML=`<img src="${imgs[selImg]||imgs[0]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    mainEl.innerHTML=`<span style="font-size:120px">${p.icon||'👓'}</span>`;
   }
+
+  // Thumbnails — show images for current colour + colour swatches for other colours
+  const thumbsEl=document.getElementById('pd-thumbs');
+  let thumbsHTML='';
+
+  // Image thumbs for current colour
+  if(imgs.length>1){
+    thumbsHTML+=imgs.map((url,i)=>`
+      <div class="pd-thumb-item${i===selImg?' active':''}" onclick="selImgFn(${i})" title="View image ${i+1}">
+        <img src="${url}" alt="${p.name} ${i+1}">
+      </div>`).join('');
+  }
+
+  // Colour swatches as thumbs (if >1 colour)
+  if((p.colors||[]).length>1){
+    if(imgs.length>1) thumbsHTML+=`<div style="width:1px;background:var(--border);margin:0 4px;align-self:stretch"></div>`;
+    thumbsHTML+=(p.colors||[]).map((c,i)=>{
+      const sc=getSwatchClass(c.name);
+      const styleStr=sc?'':`background:${c.hex}`;
+      return`<div class="pd-thumb-item color-swatch-thumb${i===selColor?' active':''}" onclick="selColorFn(${i})" title="${c.name}" style="${styleStr}">
+        ${sc?`<div style="width:100%;height:100%" class="${sc}"></div>`:''}
+      </div>`;
+    }).join('');
+  }
+  thumbsEl.innerHTML=thumbsHTML;
 }
+
+function renderColorSwatches(){
+  const p=currentProduct;
+  document.getElementById('pd-colors').innerHTML=(p.colors||[]).map((c,i)=>{
+    const sc=getSwatchClass(c.name);
+    return`<div class="pd-color-opt${i===selColor?' active':''}" onclick="selColorFn(${i})">
+      <div class="pd-swatch ${sc}" style="${sc?'':('background:'+c.hex)}"></div>
+      <span>${c.name}</span>
+    </div>`;
+  }).join('');
+}
+
+function selColorFn(i){
+  selColor=i; selImg=0;
+  renderGallery();
+  renderColorSwatches();
+}
+
+function selImgFn(i){
+  selImg=i;
+  const p=currentProduct;
+  const imgs=getColorImages(p,selColor);
+  const mainEl=document.getElementById('pd-main');
+  if(imgs[i]) mainEl.innerHTML=`<img src="${imgs[i]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`;
+  document.querySelectorAll('.pd-thumb-item').forEach((t,j)=>{
+    if(j<imgs.length) t.classList.toggle('active',j===i);
+  });
+}
+
+// ═══════════════════════════════════════
+// LIGHTBOX
+// ═══════════════════════════════════════
+let lbImgs=[], lbIdx=0;
+function openLightbox(){
+  const p=currentProduct;
+  if(!p) return;
+  lbImgs=getColorImages(p,selColor);
+  if(!lbImgs.length) return;
+  lbIdx=selImg;
+  showLightboxImg();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+function showLightboxImg(){
+  document.getElementById('lightbox-img').src=lbImgs[lbIdx];
+  document.getElementById('lightbox-counter').textContent=`${lbIdx+1} / ${lbImgs.length}`;
+}
+function lightboxNav(d){
+  lbIdx=(lbIdx+d+lbImgs.length)%lbImgs.length;
+  showLightboxImg();
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open')) return;
+  if(e.key==='Escape') closeLightbox();
+  if(e.key==='ArrowLeft') lightboxNav(-1);
+  if(e.key==='ArrowRight') lightboxNav(1);
+});
+
 function chQty(d){pdQty=Math.max(1,Math.min(10,pdQty+d));document.getElementById('pd-qty').value=pdQty;}
 function pdAddCart(){if(currentProduct)addCart(currentProduct.id,currentProduct.cat,currentProduct.mat,selColor,pdQty);}
 function pdBuyNow(){if(currentProduct){addCart(currentProduct.id,currentProduct.cat,currentProduct.mat,selColor,pdQty);goCheckout();}}
