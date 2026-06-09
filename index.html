@@ -1439,28 +1439,25 @@ window.addEventListener('popstate', e=>{
 
 // On first load, set initial history state so back works from page 1
 window.addEventListener('DOMContentLoaded', ()=>{
-  // Parse hash if user lands on a deep link
   const hash = location.hash.replace('#','');
-  if(hash && hash!=='home'){
-    // Try to restore from hash
+  if(hash && hash !== 'home'){
     const matMatch = hash.match(/^(men|women|kids|unisex)-(titanium|metal|acetate|tr)$/);
-    const prodMatch = hash.match(/^product-(.+)$/);
+    const catMatch = ['men','women','kids','unisex','shopall'].includes(hash);
     if(matMatch){
       currentCat=matMatch[1]; currentMat=matMatch[2];
       history.replaceState({page:'prodlist',cat:currentCat,mat:currentMat},'',location.href);
       _showPage('prodlist',{cat:currentCat,mat:currentMat});
-    } else if(prodMatch){
-      history.replaceState({page:'home'},'','#home');
-      _showPage('home');
-    } else if(document.getElementById('page-'+hash)){
+    } else if(catMatch){
       history.replaceState({page:hash},'',location.href);
       _showPage(hash);
     } else {
+      // product page or unknown — always go home on refresh, can't restore without state
       history.replaceState({page:'home'},'','#home');
       _showPage('home');
     }
   } else {
     history.replaceState({page:'home'},'','#home');
+    _showPage('home');
   }
 });
 
@@ -1665,7 +1662,9 @@ function renderProductDetail(){
 function renderGallery(){
   const p = currentProduct;
   const imgs = getColorImages(p, selColor);
-  const colorName = (p.colors||[])[selColor]?.name || '';
+  const colors = p.colors || [];
+  const activeColor = colors[selColor] || {};
+  const colorName = activeColor.name || '';
   document.getElementById('pd-meta').textContent = `${MAT_LABELS[p.mat]} · ${colorName}`;
 
   // ── Main image ──
@@ -1673,10 +1672,17 @@ function renderGallery(){
   if(imgs.length){
     mainEl.innerHTML = `<img src="${imgs[selImg]}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:6%">`;
   } else {
-    mainEl.innerHTML = `<span style="font-size:100px;display:flex;align-items:center;justify-content:center;height:100%">${p.icon||'👓'}</span>`;
+    // No real images yet — show coloured placeholder with frame icon
+    const sc = getSwatchClass(activeColor.name||'');
+    const bg = sc ? '' : `background:${activeColor.hex||'#f0f0f0'}22`;
+    mainEl.innerHTML = `
+      <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;${bg}">
+        <span style="font-size:96px">${p.icon||'👓'}</span>
+        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid)">${colorName}</span>
+      </div>`;
   }
 
-  // ── Arrow buttons ──
+  // ── Arrow buttons — show only if multiple images ──
   const prevBtn = document.getElementById('pd-img-prev');
   const nextBtn = document.getElementById('pd-img-next');
   const counter = document.getElementById('pd-img-counter');
@@ -1685,26 +1691,39 @@ function renderGallery(){
     nextBtn.style.display = 'flex';
     counter.textContent = `${selImg + 1} / ${imgs.length}`;
     counter.style.display = 'block';
-    prevBtn.disabled = false;
-    nextBtn.disabled = false;
   } else {
     prevBtn.style.display = 'none';
     nextBtn.style.display = 'none';
     counter.style.display = 'none';
   }
 
-  // ── Image thumbnails only — strictly photos, no colour swatches ──
+  // ── Thumbnail strip — ALWAYS visible ──
+  // Shows: real image thumbs if uploaded, otherwise one placeholder tile per colour
   const thumbsEl = document.getElementById('pd-thumbs');
-  if(imgs.length > 1){
+  thumbsEl.style.display = 'flex';
+
+  if(imgs.length > 0){
+    // Real images — show image thumbnails for current colour
     thumbsEl.innerHTML = imgs.map((url, i) => `
-      <div class="pd-thumb-item${i === selImg ? ' active' : ''}" onclick="selImgFn(${i})" title="Image ${i+1}">
-        <img src="${url}" alt="${p.name} view ${i+1}">
+      <div class="pd-thumb-item${i === selImg ? ' active' : ''}" onclick="selImgFn(${i})" title="View ${i+1}">
+        <img src="${url}" alt="${p.name} ${i+1}">
       </div>`).join('');
-    thumbsEl.style.display = 'flex';
   } else {
-    // Only 1 or 0 images — no thumb strip needed
-    thumbsEl.innerHTML = '';
-    thumbsEl.style.display = 'none';
+    // No images yet — show one colour-coded tile per colour as placeholder
+    // Clicking switches active colour
+    thumbsEl.innerHTML = colors.map((c, i) => {
+      const sc = getSwatchClass(c.name);
+      const activeStyle = i === selColor ? 'border-color:var(--dark)' : '';
+      return `<div class="pd-thumb-item${i === selColor ? ' active' : ''}"
+        onclick="selColorFn(${i})"
+        title="${c.name}"
+        style="${activeStyle}">
+        <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${sc?'':'background:'+c.hex+'22'}">
+          <div class="${sc||''}" style="width:28px;height:28px;border-radius:50%;${sc?'':'background:'+c.hex};border:1px solid rgba(0,0,0,.12)"></div>
+          <span style="font-size:9px;color:var(--mid);letter-spacing:.3px;text-align:center;padding:0 2px;line-height:1.2">${c.name}</span>
+        </div>
+      </div>`;
+    }).join('');
   }
 }
 
