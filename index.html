@@ -1407,23 +1407,25 @@ function _showPage(name, opts={}){
   }
 }
 
-// Public nav functions — push to history then show
 function go(name){
   history.pushState({page:name},'',`#${name}`);
+  _savePage(name);
   _showPage(name);
 }
 
 function goMat(cat,mat){
   currentCat=cat; currentMat=mat;
   history.pushState({page:'prodlist',cat,mat},'',`#${cat}-${mat}`);
+  _savePage('prodlist',{cat,mat});
   _showPage('prodlist',{cat,mat});
 }
 
 function showProduct(id,cat,mat){
   const p=findProduct(id,cat,mat);
   if(!p) return;
-  currentProduct=p; selColor=0; pdQty=1;
+  currentProduct=p; selColor=0; pdQty=1; selImg=0;
   history.pushState({page:'product',id,cat,mat},'',`#product-${id}`);
+  _savePage('product',{id,cat,mat});
   renderProductDetail();
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-product').classList.add('active');
@@ -1431,34 +1433,31 @@ function showProduct(id,cat,mat){
 }
 
 // Handle browser back / forward
-window.addEventListener('popstate', e=>{
+window.addEventListener('popstate', e => {
   const state = e.state;
-  if(!state){_showPage('home');return;}
+  if(!state || state.page === 'home'){_showPage('home'); return;}
   _showPage(state.page, state);
 });
 
-// On first load, set initial history state so back works from page 1
-window.addEventListener('DOMContentLoaded', ()=>{
-  const hash = location.hash.replace('#','');
-  if(hash && hash !== 'home'){
-    const matMatch = hash.match(/^(men|women|kids|unisex)-(titanium|metal|acetate|tr)$/);
-    const catMatch = ['men','women','kids','unisex','shopall'].includes(hash);
-    if(matMatch){
-      currentCat=matMatch[1]; currentMat=matMatch[2];
-      history.replaceState({page:'prodlist',cat:currentCat,mat:currentMat},'',location.href);
-      _showPage('prodlist',{cat:currentCat,mat:currentMat});
-    } else if(catMatch){
-      history.replaceState({page:hash},'',location.href);
-      _showPage(hash);
-    } else {
-      // product page or unknown — always go home on refresh, can't restore without state
-      history.replaceState({page:'home'},'','#home');
-      _showPage('home');
+// Save current page to sessionStorage on every navigation
+// so refresh restores exactly where the user was
+function _savePage(name, opts={}){
+  try{ sessionStorage.setItem('mp_page', JSON.stringify({page:name, ...opts})); }catch(e){}
+}
+
+// On first load — restore from sessionStorage if available (handles refresh)
+window.addEventListener('DOMContentLoaded', () => {
+  try{
+    const saved = JSON.parse(sessionStorage.getItem('mp_page')||'null');
+    if(saved && saved.page){
+      history.replaceState(saved, '', location.href);
+      _showPage(saved.page, saved);
+      return;
     }
-  } else {
-    history.replaceState({page:'home'},'','#home');
-    _showPage('home');
-  }
+  }catch(e){}
+  // No saved state — fresh visit, show home
+  history.replaceState({page:'home'}, '', location.href);
+  _showPage('home');
 });
 
 // ═══════════════════════════════════════
@@ -1672,17 +1671,19 @@ function renderGallery(){
   if(imgs.length){
     mainEl.innerHTML = `<img src="${imgs[selImg]}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:6%">`;
   } else {
-    // No real images yet — show coloured placeholder with frame icon
+    // No real images — show placeholder for selected colour only
     const sc = getSwatchClass(activeColor.name||'');
-    const bg = sc ? '' : `background:${activeColor.hex||'#f0f0f0'}22`;
     mainEl.innerHTML = `
-      <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;${bg}">
+      <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px">
         <span style="font-size:96px">${p.icon||'👓'}</span>
-        <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid)">${colorName}</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="${sc}" style="width:16px;height:16px;border-radius:50%;${sc?'':'background:'+activeColor.hex};border:1px solid rgba(0,0,0,.15)"></div>
+          <span style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid)">${colorName}</span>
+        </div>
       </div>`;
   }
 
-  // ── Arrow buttons — show only if multiple images ──
+  // ── Arrows — only if multiple images ──
   const prevBtn = document.getElementById('pd-img-prev');
   const nextBtn = document.getElementById('pd-img-next');
   const counter = document.getElementById('pd-img-counter');
@@ -1697,33 +1698,21 @@ function renderGallery(){
     counter.style.display = 'none';
   }
 
-  // ── Thumbnail strip — ALWAYS visible ──
-  // Shows: real image thumbs if uploaded, otherwise one placeholder tile per colour
+  // ── Thumbnail strip ──
+  // ONLY show images for the currently selected colour
+  // If no real images exist for this colour — hide the strip entirely
   const thumbsEl = document.getElementById('pd-thumbs');
-  thumbsEl.style.display = 'flex';
-
-  if(imgs.length > 0){
-    // Real images — show image thumbnails for current colour
+  if(imgs.length > 1){
+    // Multiple real images for this colour — show them as thumbnails
+    thumbsEl.style.display = 'flex';
     thumbsEl.innerHTML = imgs.map((url, i) => `
       <div class="pd-thumb-item${i === selImg ? ' active' : ''}" onclick="selImgFn(${i})" title="View ${i+1}">
         <img src="${url}" alt="${p.name} ${i+1}">
       </div>`).join('');
   } else {
-    // No images yet — show one colour-coded tile per colour as placeholder
-    // Clicking switches active colour
-    thumbsEl.innerHTML = colors.map((c, i) => {
-      const sc = getSwatchClass(c.name);
-      const activeStyle = i === selColor ? 'border-color:var(--dark)' : '';
-      return `<div class="pd-thumb-item${i === selColor ? ' active' : ''}"
-        onclick="selColorFn(${i})"
-        title="${c.name}"
-        style="${activeStyle}">
-        <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;${sc?'':'background:'+c.hex+'22'}">
-          <div class="${sc||''}" style="width:28px;height:28px;border-radius:50%;${sc?'':'background:'+c.hex};border:1px solid rgba(0,0,0,.12)"></div>
-          <span style="font-size:9px;color:var(--mid);letter-spacing:.3px;text-align:center;padding:0 2px;line-height:1.2">${c.name}</span>
-        </div>
-      </div>`;
-    }).join('');
+    // 0 or 1 image for this colour — hide strip completely
+    thumbsEl.style.display = 'none';
+    thumbsEl.innerHTML = '';
   }
 }
 
@@ -1878,6 +1867,7 @@ function goCheckout(){
   document.getElementById('co-tax').textContent='₹'+tax.toLocaleString('en-IN');
   document.getElementById('co-total').textContent='₹'+(sub+tax).toLocaleString('en-IN');
   history.pushState({page:'checkout'},'','#checkout');
+  _savePage('checkout');
   _showPage('checkout');
 }
 function selPay(m){
@@ -1901,7 +1891,7 @@ function placeOrder(){
     <div class="success-row"><span>Items</span><span>${cart.reduce((s,c)=>s+c.qty,0)}</span></div>
     <div class="success-row"><span>Total Paid</span><span>₹${(sub+tax).toLocaleString('en-IN')}</span></div>`;
   cart=[];renderCart();
-  // Replace history so back from success goes to home, not checkout
+  try{sessionStorage.removeItem('mp_page');}catch(e){}
   history.replaceState({page:'success'},'','#success');
   _showPage('success');
 }
