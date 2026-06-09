@@ -290,12 +290,22 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 /* ── PRODUCT DETAIL GALLERY ── */
 .pd-wrap{max-width:1300px;margin:0 auto;padding:40px 80px 60px;display:grid;grid-template-columns:1fr 1fr;gap:64px}
 .pd-gallery{display:flex;flex-direction:column;gap:10px}
-.pd-main-wrap{position:relative;aspect-ratio:1;background:#f0f0f0;overflow:hidden;cursor:zoom-in;border:1px solid var(--border)}
+.pd-main-wrap{position:relative;aspect-ratio:1;background:#f0f0f0;overflow:hidden;cursor:pointer;border:1px solid var(--border)}
 .pd-main-wrap img{width:100%;height:100%;object-fit:contain;transition:transform .4s;padding:6%}
-.pd-main-wrap:hover img{transform:scale(1.04)}
-.pd-main-wrap .pd-zoom-hint{position:absolute;bottom:12px;right:12px;background:rgba(42,31,26,.55);color:#fff;font-size:10px;letter-spacing:1px;padding:5px 10px;text-transform:uppercase;opacity:0;transition:opacity .2s}
+.pd-main-wrap:hover img{transform:scale(1.03)}
+/* Left / right image nav arrows */
+.pd-img-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.92);border:1px solid var(--border);width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--dark);cursor:pointer;z-index:10;transition:all .2s;opacity:0}
+.pd-main-wrap:hover .pd-img-arrow{opacity:1}
+.pd-img-arrow:hover{background:var(--dark);color:var(--white);border-color:var(--dark)}
+.pd-img-prev{left:10px}
+.pd-img-next{right:10px}
+.pd-img-arrow:disabled{opacity:0!important;pointer-events:none}
+/* Image counter e.g. 2 / 4 */
+.pd-img-counter{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(42,31,26,.5);color:var(--white);font-size:10px;letter-spacing:1px;padding:4px 10px;opacity:0;transition:opacity .2s;white-space:nowrap}
+.pd-main-wrap:hover .pd-img-counter{opacity:1}
+/* Zoom hint */
+.pd-zoom-hint{position:absolute;bottom:10px;right:10px;background:rgba(42,31,26,.5);color:var(--white);font-size:10px;letter-spacing:1px;padding:4px 10px;opacity:0;transition:opacity .2s;cursor:pointer}
 .pd-main-wrap:hover .pd-zoom-hint{opacity:1}
-.pd-main-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:120px}
 .pd-thumbs-row{display:flex;gap:8px;flex-wrap:wrap}
 .pd-thumb-item{width:72px;height:72px;border:2px solid transparent;overflow:hidden;cursor:pointer;transition:border-color .2s;flex-shrink:0;background:#f0f0f0}
 .pd-thumb-item.active{border-color:var(--dark)}
@@ -1048,10 +1058,15 @@ footer{background:var(--dark);color:rgba(253,246,240,.5);padding:48px 40px}
   <div class="breadcrumb" id="pd-breadcrumb"></div>
   <div class="pd-wrap">
     <div class="pd-gallery">
-      <div class="pd-main-wrap" id="pd-main-wrap" onclick="openLightbox()">
+      <!-- Main image with left/right arrows -->
+      <div class="pd-main-wrap" id="pd-main-wrap">
+        <button class="pd-img-arrow pd-img-prev" id="pd-img-prev" onclick="navImg(-1)">&#8592;</button>
         <div id="pd-main" class="pd-main-placeholder"></div>
-        <div class="pd-zoom-hint">Click to zoom</div>
+        <button class="pd-img-arrow pd-img-next" id="pd-img-next" onclick="navImg(1)">&#8594;</button>
+        <div class="pd-img-counter" id="pd-img-counter"></div>
+        <div class="pd-zoom-hint" onclick="openLightbox()">⊕ Zoom</div>
       </div>
+      <!-- Image thumbnails strip — only images, no colour swatches here -->
       <div class="pd-thumbs-row" id="pd-thumbs"></div>
     </div>
     <div class="pd-info">
@@ -1060,6 +1075,7 @@ footer{background:var(--dark);color:rgba(253,246,240,.5);padding:48px 40px}
       <div class="pd-meta-text" id="pd-meta"></div>
       <div class="pd-price-row" id="pd-price-row"></div>
       <div class="pd-section-label">Frame Colour</div>
+      <!-- Colour circles only — separate from thumbnails -->
       <div class="pd-color-opts" id="pd-colors"></div>
       <div class="pd-section-label">Quantity</div>
       <div class="pd-qty-row">
@@ -1647,71 +1663,91 @@ function renderProductDetail(){
 }
 
 function renderGallery(){
-  const p=currentProduct;
-  const imgs=getColorImages(p,selColor);
-  const colorName=(p.colors||[])[selColor]?.name||'';
-  document.getElementById('pd-meta').textContent=`${MAT_LABELS[p.mat]} · ${colorName}`;
+  const p = currentProduct;
+  const imgs = getColorImages(p, selColor);
+  const colorName = (p.colors||[])[selColor]?.name || '';
+  document.getElementById('pd-meta').textContent = `${MAT_LABELS[p.mat]} · ${colorName}`;
 
-  // Main image
-  const mainEl=document.getElementById('pd-main');
+  // ── Main image ──
+  const mainEl = document.getElementById('pd-main');
   if(imgs.length){
-    mainEl.innerHTML=`<img src="${imgs[selImg]||imgs[0]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`;
+    mainEl.innerHTML = `<img src="${imgs[selImg]}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:6%">`;
   } else {
-    mainEl.innerHTML=`<span style="font-size:120px">${p.icon||'👓'}</span>`;
+    mainEl.innerHTML = `<span style="font-size:100px;display:flex;align-items:center;justify-content:center;height:100%">${p.icon||'👓'}</span>`;
   }
 
-  // Thumbnails — show images for current colour + colour swatches for other colours
-  const thumbsEl=document.getElementById('pd-thumbs');
-  let thumbsHTML='';
+  // ── Arrow buttons ──
+  const prevBtn = document.getElementById('pd-img-prev');
+  const nextBtn = document.getElementById('pd-img-next');
+  const counter = document.getElementById('pd-img-counter');
+  if(imgs.length > 1){
+    prevBtn.style.display = 'flex';
+    nextBtn.style.display = 'flex';
+    counter.textContent = `${selImg + 1} / ${imgs.length}`;
+    counter.style.display = 'block';
+    prevBtn.disabled = false;
+    nextBtn.disabled = false;
+  } else {
+    prevBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+    counter.style.display = 'none';
+  }
 
-  // Image thumbs for current colour
-  if(imgs.length>1){
-    thumbsHTML+=imgs.map((url,i)=>`
-      <div class="pd-thumb-item${i===selImg?' active':''}" onclick="selImgFn(${i})" title="View image ${i+1}">
-        <img src="${url}" alt="${p.name} ${i+1}">
+  // ── Image thumbnails only — strictly photos, no colour swatches ──
+  const thumbsEl = document.getElementById('pd-thumbs');
+  if(imgs.length > 1){
+    thumbsEl.innerHTML = imgs.map((url, i) => `
+      <div class="pd-thumb-item${i === selImg ? ' active' : ''}" onclick="selImgFn(${i})" title="Image ${i+1}">
+        <img src="${url}" alt="${p.name} view ${i+1}">
       </div>`).join('');
+    thumbsEl.style.display = 'flex';
+  } else {
+    // Only 1 or 0 images — no thumb strip needed
+    thumbsEl.innerHTML = '';
+    thumbsEl.style.display = 'none';
   }
-
-  // Colour swatches as thumbs (if >1 colour)
-  if((p.colors||[]).length>1){
-    if(imgs.length>1) thumbsHTML+=`<div style="width:1px;background:var(--border);margin:0 4px;align-self:stretch"></div>`;
-    thumbsHTML+=(p.colors||[]).map((c,i)=>{
-      const sc=getSwatchClass(c.name);
-      const styleStr=sc?'':`background:${c.hex}`;
-      return`<div class="pd-thumb-item color-swatch-thumb${i===selColor?' active':''}" onclick="selColorFn(${i})" title="${c.name}" style="${styleStr}">
-        ${sc?`<div style="width:100%;height:100%" class="${sc}"></div>`:''}
-      </div>`;
-    }).join('');
-  }
-  thumbsEl.innerHTML=thumbsHTML;
 }
 
 function renderColorSwatches(){
-  const p=currentProduct;
-  document.getElementById('pd-colors').innerHTML=(p.colors||[]).map((c,i)=>{
-    const sc=getSwatchClass(c.name);
-    return`<div class="pd-color-opt${i===selColor?' active':''}" onclick="selColorFn(${i})">
-      <div class="pd-swatch ${sc}" style="${sc?'':('background:'+c.hex)}"></div>
+  const p = currentProduct;
+  const colors = p.colors || [];
+  // Only render if more than 1 colour
+  document.getElementById('pd-colors').innerHTML = colors.map((c, i) => {
+    const sc = getSwatchClass(c.name);
+    return `<div class="pd-color-opt${i === selColor ? ' active' : ''}" onclick="selColorFn(${i})" title="${c.name}">
+      <div class="pd-swatch ${sc}" style="${sc ? '' : ('background:' + c.hex)}"></div>
       <span>${c.name}</span>
     </div>`;
   }).join('');
 }
 
 function selColorFn(i){
-  selColor=i; selImg=0;
+  selColor = i;
+  selImg = 0; // reset to first image when switching colour
   renderGallery();
   renderColorSwatches();
 }
 
 function selImgFn(i){
-  selImg=i;
-  const p=currentProduct;
-  const imgs=getColorImages(p,selColor);
-  const mainEl=document.getElementById('pd-main');
-  if(imgs[i]) mainEl.innerHTML=`<img src="${imgs[i]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover">`;
-  document.querySelectorAll('.pd-thumb-item').forEach((t,j)=>{
-    if(j<imgs.length) t.classList.toggle('active',j===i);
-  });
+  selImg = i;
+  const p = currentProduct;
+  const imgs = getColorImages(p, selColor);
+  // Update main image
+  const mainEl = document.getElementById('pd-main');
+  if(imgs[i]) mainEl.innerHTML = `<img src="${imgs[i]}" alt="${p.name}" style="width:100%;height:100%;object-fit:contain;padding:6%">`;
+  // Update counter
+  const counter = document.getElementById('pd-img-counter');
+  counter.textContent = `${i + 1} / ${imgs.length}`;
+  // Update thumb active state
+  document.querySelectorAll('#pd-thumbs .pd-thumb-item').forEach((t, j) => t.classList.toggle('active', j === i));
+}
+
+function navImg(dir){
+  const p = currentProduct;
+  const imgs = getColorImages(p, selColor);
+  if(!imgs.length) return;
+  selImg = (selImg + dir + imgs.length) % imgs.length;
+  selImgFn(selImg);
 }
 
 // ═══════════════════════════════════════
@@ -1719,32 +1755,34 @@ function selImgFn(i){
 // ═══════════════════════════════════════
 let lbImgs=[], lbIdx=0;
 function openLightbox(){
-  const p=currentProduct;
+  const p = currentProduct;
   if(!p) return;
-  lbImgs=getColorImages(p,selColor);
+  lbImgs = getColorImages(p, selColor);
   if(!lbImgs.length) return;
-  lbIdx=selImg;
+  lbIdx = selImg;
   showLightboxImg();
   document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
 }
 function closeLightbox(){
   document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow='';
+  document.body.style.overflow = '';
 }
 function showLightboxImg(){
-  document.getElementById('lightbox-img').src=lbImgs[lbIdx];
-  document.getElementById('lightbox-counter').textContent=`${lbIdx+1} / ${lbImgs.length}`;
+  document.getElementById('lightbox-img').src = lbImgs[lbIdx];
+  document.getElementById('lightbox-counter').textContent = `${lbIdx + 1} / ${lbImgs.length}`;
 }
 function lightboxNav(d){
-  lbIdx=(lbIdx+d+lbImgs.length)%lbImgs.length;
+  lbIdx = (lbIdx + d + lbImgs.length) % lbImgs.length;
   showLightboxImg();
+  // Keep main gallery in sync
+  selImgFn(lbIdx);
 }
-document.addEventListener('keydown',e=>{
+document.addEventListener('keydown', e => {
   if(!document.getElementById('lightbox').classList.contains('open')) return;
-  if(e.key==='Escape') closeLightbox();
-  if(e.key==='ArrowLeft') lightboxNav(-1);
-  if(e.key==='ArrowRight') lightboxNav(1);
+  if(e.key === 'Escape') closeLightbox();
+  if(e.key === 'ArrowLeft') lightboxNav(-1);
+  if(e.key === 'ArrowRight') lightboxNav(1);
 });
 
 function chQty(d){pdQty=Math.max(1,Math.min(10,pdQty+d));document.getElementById('pd-qty').value=pdQty;}
