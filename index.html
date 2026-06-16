@@ -1499,11 +1499,13 @@ function _savePage(name, opts={}){
   try{ sessionStorage.setItem('mp_page', JSON.stringify({page:name, ...opts})); }catch(e){}
 }
 
-// On first load — restore from sessionStorage if available (handles refresh)
-window.addEventListener('DOMContentLoaded', () => {
+// Restore page on load — runs directly (not via DOMContentLoaded,
+// since this script tag sits at the bottom of <body> and that event
+// has typically already fired by the time this code runs)
+function _restorePageOnLoad(){
   try{
     const saved = JSON.parse(sessionStorage.getItem('mp_page')||'null');
-    if(saved && saved.page){
+    if(saved && saved.page && document.getElementById('page-'+saved.page)){
       history.replaceState(saved, '', location.href);
       _showPage(saved.page, saved);
       return;
@@ -1512,7 +1514,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // No saved state — fresh visit, show home
   history.replaceState({page:'home'}, '', location.href);
   _showPage('home');
-});
+}
 
 // ═══════════════════════════════════════
 // PRODUCT LIST PAGE
@@ -1855,6 +1857,35 @@ function pdBuyNow(){if(currentProduct){addCart(currentProduct.id,currentProduct.
 // CART
 // ═══════════════════════════════════════
 let cart=[];
+
+// Persist cart to sessionStorage whenever it changes
+function _saveCart(){
+  try{
+    const serializable = cart.map(c => ({
+      key: c.key,
+      productId: c.p.id,
+      cat: c.p.cat,
+      mat: c.p.mat,
+      colorIdx: c.colorIdx,
+      qty: c.qty
+    }));
+    sessionStorage.setItem('mp_cart', JSON.stringify(serializable));
+  }catch(e){}
+}
+
+// Restore cart from sessionStorage on load
+function _restoreCart(){
+  try{
+    const saved = JSON.parse(sessionStorage.getItem('mp_cart')||'null');
+    if(saved && saved.length){
+      cart = saved.map(s => {
+        const p = findProduct(s.productId, s.cat, s.mat);
+        if(!p) return null;
+        return { key: s.key, p, colorIdx: s.colorIdx, qty: s.qty };
+      }).filter(Boolean);
+    }
+  }catch(e){}
+}
 function addCart(id,cat,mat,colorIdx,qty){
   const p=findProduct(id,cat,mat);if(!p)return;
   const key=`${id}-${colorIdx}`;
@@ -1865,6 +1896,7 @@ function addCart(id,cat,mat,colorIdx,qty){
   showToast(`${p.name} (${(p.colors||[])[colorIdx]?.name||''}) added to cart`);
 }
 function renderCart(){
+  _saveCart();
   const count=cart.reduce((s,c)=>s+c.qty,0);
   document.getElementById('cart-count').textContent=count;
   const body=document.getElementById('cart-body');
@@ -1949,7 +1981,7 @@ function placeOrder(){
     <div class="success-row"><span>Items</span><span>${cart.reduce((s,c)=>s+c.qty,0)}</span></div>
     <div class="success-row"><span>Total Paid</span><span>₹${(sub+tax).toLocaleString('en-IN')}</span></div>`;
   cart=[];renderCart();
-  try{sessionStorage.removeItem('mp_page');}catch(e){}
+  try{sessionStorage.removeItem('mp_page');sessionStorage.removeItem('mp_cart');}catch(e){}
   history.replaceState({page:'success'},'','#success');
   _showPage('success');
 }
@@ -2216,10 +2248,12 @@ document.addEventListener('click', e=>{
 // INIT
 // ═══════════════════════════════════════
 buildCarousel();
+_restoreCart();
 renderCart();
 startAuto();
 applyContent();
 checkMobileFilters();
+_restorePageOnLoad();
 </script>
 </body>
 </html>
