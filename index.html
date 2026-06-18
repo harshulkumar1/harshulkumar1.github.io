@@ -1451,7 +1451,6 @@ function _showPage(name, opts={}){
   if(!pageEl){ document.getElementById('page-home').classList.add('active'); return; }
   pageEl.classList.add('active');
   window.scrollTo(0,0);
-  if(name==='home'){ /* nothing to render */ }
   if(name==='shopall') renderShopAll();
   if(name==='prodlist'){
     if(opts.cat) currentCat=opts.cat;
@@ -1465,12 +1464,32 @@ function _showPage(name, opts={}){
       selColor=0; selImg=0; pdQty=1;
       renderProductDetail();
     } else {
-      // Product not found (admin removed it etc) — fall back to home
+      // Product not found — fall back to home
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
       document.getElementById('page-home').classList.add('active');
       try{ sessionStorage.removeItem('mp_page'); }catch(e){}
     }
   }
+  if(name==='checkout'){
+    // Re-render checkout summary from current cart data
+    _rebuildCheckoutSummary();
+  }
+}
+
+// Rebuild the checkout order summary from current cart state
+function _rebuildCheckoutSummary(){
+  if(!cart.length) return;
+  const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
+  const tax=Math.round(sub*.18);
+  document.getElementById('co-items').innerHTML=cart.map(c=>`
+    <div class="co-item">
+      <div class="co-item-img">${c.p.images&&c.p.images[0]?`<img src="${c.p.images[0]}">`:`<span>${c.p.icon||'👓'}</span>`}</div>
+      <div style="flex:1"><div class="co-item-name">${c.p.name}</div><div class="co-item-meta">${(c.p.colors||[])[c.colorIdx]?.name||''} · Qty ${c.qty}</div></div>
+      <div class="co-item-price">₹${(c.p.price*c.qty).toLocaleString('en-IN')}</div>
+    </div>`).join('');
+  document.getElementById('co-sub').textContent='₹'+sub.toLocaleString('en-IN');
+  document.getElementById('co-tax').textContent='₹'+tax.toLocaleString('en-IN');
+  document.getElementById('co-total').textContent='₹'+(sub+tax).toLocaleString('en-IN');
 }
 
 function go(name){
@@ -1677,14 +1696,6 @@ function findProduct(id,cat,mat){
     const p=makeProducts(c,m).find(x=>x.id===id);if(p)return p;
   }
   return null;
-}
-
-function showProduct(id,cat,mat){
-  currentProduct=findProduct(id,cat,mat);
-  if(!currentProduct)return;
-  selColor=0;pdQty=1;selImg=0;
-  renderProductDetail();
-  go('product');
 }
 
 // Current image index within selected colour's images — declared at top with other product state
