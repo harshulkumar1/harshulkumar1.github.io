@@ -1447,8 +1447,11 @@ if(hc){hc.addEventListener('mouseenter',stopAuto);hc.addEventListener('mouseleav
 // Core renderer — shows a page WITHOUT pushing history (used by popstate)
 function _showPage(name, opts={}){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
+  const pageEl = document.getElementById('page-'+name);
+  if(!pageEl){ document.getElementById('page-home').classList.add('active'); return; }
+  pageEl.classList.add('active');
   window.scrollTo(0,0);
+  if(name==='home'){ /* nothing to render */ }
   if(name==='shopall') renderShopAll();
   if(name==='prodlist'){
     if(opts.cat) currentCat=opts.cat;
@@ -1457,7 +1460,16 @@ function _showPage(name, opts={}){
   }
   if(name==='product' && opts.id){
     const p=findProduct(opts.id, opts.cat, opts.mat);
-    if(p){currentProduct=p;selColor=0;pdQty=1;renderProductDetail();}
+    if(p){
+      currentProduct=p;
+      selColor=0; selImg=0; pdQty=1;
+      renderProductDetail();
+    } else {
+      // Product not found (admin removed it etc) — fall back to home
+      document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+      document.getElementById('page-home').classList.add('active');
+      try{ sessionStorage.removeItem('mp_page'); }catch(e){}
+    }
   }
 }
 
@@ -1486,22 +1498,26 @@ function showProduct(id,cat,mat){
   window.scrollTo(0,0);
 }
 
-// Handle browser back / forward
+// Handle browser back / forward — IMPORTANT: also save the page being navigated to,
+// so that a refresh after back/forward restores correctly
 window.addEventListener('popstate', e => {
   const state = e.state;
-  if(!state || state.page === 'home'){_showPage('home'); return;}
+  if(!state || state.page === 'home'){
+    _savePage('home');
+    _showPage('home');
+    return;
+  }
+  _savePage(state.page, state);
   _showPage(state.page, state);
 });
 
 // Save current page to sessionStorage on every navigation
-// so refresh restores exactly where the user was
 function _savePage(name, opts={}){
   try{ sessionStorage.setItem('mp_page', JSON.stringify({page:name, ...opts})); }catch(e){}
 }
 
-// Restore page on load — runs directly (not via DOMContentLoaded,
-// since this script tag sits at the bottom of <body> and that event
-// has typically already fired by the time this code runs)
+// Restore page on load — runs directly (script is at bottom of body,
+// so DOMContentLoaded has already fired and a listener would never run)
 function _restorePageOnLoad(){
   try{
     const saved = JSON.parse(sessionStorage.getItem('mp_page')||'null');
@@ -1511,7 +1527,6 @@ function _restorePageOnLoad(){
       return;
     }
   }catch(e){}
-  // No saved state — fresh visit, show home
   history.replaceState({page:'home'}, '', location.href);
   _showPage('home');
 }
@@ -1520,7 +1535,7 @@ function _restorePageOnLoad(){
 // PRODUCT LIST PAGE
 // ═══════════════════════════════════════
 let currentCat='men',currentMat='titanium',currentSort='featured';
-let currentProduct=null,selColor=0,pdQty=1;
+let currentProduct=null,selColor=0,pdQty=1,selImg=0;
 
 function renderProdList(){
   // Breadcrumb
@@ -1672,8 +1687,7 @@ function showProduct(id,cat,mat){
   go('product');
 }
 
-// Current image index within selected colour's images
-let selImg=0;
+// Current image index within selected colour's images — declared at top with other product state
 
 function getColorImages(p, colorIdx){
   // Per-colour images: stored as p.colorImages[colorIdx] = [url1, url2, ...]
