@@ -235,11 +235,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .p-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
 .p-card{background:var(--white);border:1px solid var(--border);overflow:hidden;transition:border-color .2s}
 .p-card:hover{border-color:var(--dark)}
-.p-card-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer;background:#f0f0f0}
-.p-card-img img{width:100%;height:100%;object-fit:contain;transition:transform .4s;padding:8%}
-.p-card:hover .p-card-img img{transform:scale(1.04)}
+.p-card:hover .p-card-slide img{transform:scale(1.03)}
 .p-card-icon{font-size:72px;transition:transform .3s}
-.p-card:hover .p-card-icon{transform:scale(1.08)}
+.p-card:hover .p-card-icon{transform:scale(1.06)}
 .p-badge{position:absolute;top:10px;left:10px;background:var(--dark);color:var(--white);font-size:10px;letter-spacing:1px;padding:4px 10px;text-transform:uppercase;z-index:2}
 .p-badge.sale{background:#8a2a00}
 .p-badge.bestseller{background:var(--accent);color:var(--dark)}
@@ -250,8 +248,20 @@ nav{background:var(--white);border-bottom:1px solid var(--border);position:stick
 .p-card-name:hover{color:var(--accent-dark)}
 .p-card-meta{font-size:11px;color:var(--mid);margin-bottom:10px;letter-spacing:.3px}
 .p-colors{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
-.p-color-dot{width:14px;height:14px;border-radius:50%;border:1.5px solid rgba(0,0,0,.1)}
-.p-prices{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.p-color-dot{width:16px;height:16px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .15s;box-shadow:0 0 0 0 transparent;flex-shrink:0}
+.p-color-dot.active{border-color:var(--dark);box-shadow:0 0 0 1.5px var(--dark)}
+.p-color-dot:hover{transform:scale(1.15)}
+/* Swipeable image track inside product cards */
+.p-card-img{aspect-ratio:1;position:relative;overflow:hidden;cursor:pointer;background:#f0f0f0}
+.p-card-img-track{display:flex;width:100%;height:100%;transition:transform .25s ease-out;touch-action:pan-y}
+.p-card-img-track.swiping{transition:none}
+.p-card-slide{min-width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.p-card-slide img{width:100%;height:100%;object-fit:contain;padding:8%}
+.p-card-slide .p-card-icon{font-size:72px}
+/* Subtle dot indicator at bottom — only visible when multiple images */
+.p-card-dots{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:2}
+.p-card-dot{width:5px;height:5px;border-radius:50%;background:rgba(42,31,26,.2);transition:all .2s}
+.p-card-dot.on{background:var(--dark);width:12px;border-radius:3px}.p-prices{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .p-price{font-size:15px;font-weight:500}
 .p-old{font-size:13px;color:var(--mid);text-decoration:line-through}
 .p-lowstock{font-size:11px;color:#b86a00;margin-bottom:6px;font-weight:500}
@@ -1481,12 +1491,15 @@ function _rebuildCheckoutSummary(){
   if(!cart.length) return;
   const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
   const tax=Math.round(sub*.18);
-  document.getElementById('co-items').innerHTML=cart.map(c=>`
-    <div class="co-item">
-      <div class="co-item-img">${c.p.images&&c.p.images[0]?`<img src="${c.p.images[0]}">`:`<span>${c.p.icon||'👓'}</span>`}</div>
+  document.getElementById('co-items').innerHTML=cart.map(c=>{
+    const cImgs = getColorImages(c.p, c.colorIdx);
+    const thumb = cImgs.length ? `<img src="${cImgs[0]}">` : `<span>${c.p.icon||'👓'}</span>`;
+    return `<div class="co-item">
+      <div class="co-item-img">${thumb}</div>
       <div style="flex:1"><div class="co-item-name">${c.p.name}</div><div class="co-item-meta">${(c.p.colors||[])[c.colorIdx]?.name||''} · Qty ${c.qty}</div></div>
       <div class="co-item-price">₹${(c.p.price*c.qty).toLocaleString('en-IN')}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.getElementById('co-sub').textContent='₹'+sub.toLocaleString('en-IN');
   document.getElementById('co-tax').textContent='₹'+tax.toLocaleString('en-IN');
   document.getElementById('co-total').textContent='₹'+(sub+tax).toLocaleString('en-IN');
@@ -1573,6 +1586,7 @@ function renderProdList(){
 }
 
 function renderProdGrid(){
+  _resetCardUid();
   let prods=[...makeProducts(currentCat,currentMat)];
   if(currentSort==='low')prods.sort((a,b)=>a.price-b.price);
   if(currentSort==='high')prods.sort((a,b)=>b.price-a.price);
@@ -1597,6 +1611,7 @@ function updatePriceLabel(){
   document.getElementById('price-label').textContent=v>=5000?'Any price':`Up to ₹${Number(v).toLocaleString('en-IN')}`;
 }
 function applyFilters(){
+  _resetCardUid();
   const cats=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].filter(c=>['men','women','kids','unisex'].includes(c.value)&&c.checked).map(c=>c.value);
   const mats=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].filter(c=>['titanium','metal','acetate','tr'].includes(c.value)&&c.checked).map(c=>c.value);
   const badges=[...document.querySelectorAll('.filter-panel input[type=checkbox]')].filter(c=>['New','Sale','Best Seller'].includes(c.value)&&c.checked).map(c=>c.value);
@@ -1645,33 +1660,205 @@ function clearFilters(){
 // ═══════════════════════════════════════
 // PRODUCT CARD HTML
 // ═══════════════════════════════════════
+let _cardUid = 0; // unique card id counter for DOM references
+
 function prodCardHTML(p){
   const stock=getStock(p.id);
   const soldOut=stock<=0;
   const low=stock>0&&stock<=(p.lowAt||5);
-  return`<div class="p-card" style="${soldOut?'opacity:.75':''}">
-    <div class="p-card-img" onclick="showProduct('${p.id}','${p.cat}','${p.mat}')" style="cursor:pointer">
-      ${p.images&&p.images[0]?`<img src="${p.images[0]}" alt="${p.name}">`:`<span class="p-card-icon">${p.icon||'👓'}</span>`}
+  const cid = 'pc' + (++_cardUid); // unique id for this card instance
+  const colors = p.colors || [];
+  const firstColor = colors[0] || {};
+  // Get images for the first colour
+  const imgs = getColorImages(p, 0);
+
+  // Build swipeable slides
+  let slidesHTML = '';
+  if(imgs.length > 0){
+    slidesHTML = imgs.map(url => `<div class="p-card-slide"><img src="${url}" alt="${p.name}"></div>`).join('');
+  } else {
+    slidesHTML = `<div class="p-card-slide"><span class="p-card-icon">${p.icon||'👓'}</span></div>`;
+  }
+
+  // Dot indicators (only if >1 image)
+  const dotsHTML = imgs.length > 1
+    ? `<div class="p-card-dots">${imgs.map((_,i)=>`<div class="p-card-dot${i===0?' on':''}"></div>`).join('')}</div>`
+    : '';
+
+  return`<div class="p-card" id="${cid}" data-pid="${p.id}" data-cat="${p.cat}" data-mat="${p.mat}" data-sel="0" style="${soldOut?'opacity:.75':''}">
+    <div class="p-card-img" onclick="_cardTap(event,'${cid}')">
+      <div class="p-card-img-track" id="${cid}-track"
+        data-idx="0" data-len="${Math.max(imgs.length,1)}"
+        ontouchstart="_swStart(event,'${cid}')"
+        ontouchmove="_swMove(event,'${cid}')"
+        ontouchend="_swEnd(event,'${cid}')">
+        ${slidesHTML}
+      </div>
+      ${dotsHTML}
       ${p.badge?`<div class="p-badge${p.badge==='Sale'?' sale':p.badge==='Best Seller'?' bestseller':''}">${p.badge}</div>`:''}
       ${soldOut?`<div class="p-soldout-overlay"><div class="p-soldout-label">Sold Out</div></div>`:''}
     </div>
     <div class="p-card-body">
       <div class="p-card-name" onclick="showProduct('${p.id}','${p.cat}','${p.mat}')">${p.name}</div>
       <div class="p-card-meta">${CAT_LABELS[p.cat]} · ${MAT_LABELS[p.mat]}</div>
-      <div class="p-colors">${(p.colors||[]).slice(0,6).map(c=>{
+      <div class="p-colors">${colors.slice(0,8).map((c,i)=>{
         const sc=getSwatchClass(c.name);
-        return`<div class="p-color-dot${sc?' '+sc:''}" style="${sc?'':('background:'+c.hex)}" title="${c.name}"></div>`;
-      }).join('')}${(p.colors||[]).length>6?`<span style="font-size:10px;color:var(--mid)">+${p.colors.length-6}</span>`:''}</div>
+        return`<div class="p-color-dot${i===0?' active':''}${sc?' '+sc:''}" style="${sc?'':('background:'+c.hex)}" title="${c.name}" onclick="_selCardColor(event,'${cid}',${i})"></div>`;
+      }).join('')}${colors.length>8?`<span style="font-size:10px;color:var(--mid)">+${colors.length-8}</span>`:''}</div>
       <div class="p-prices"><span class="p-price">₹${p.price.toLocaleString('en-IN')}</span>${p.oldPrice?`<span class="p-old">₹${p.oldPrice.toLocaleString('en-IN')}</span>`:''}</div>
       ${low?`<div class="p-lowstock">Only ${stock} left!</div>`:''}
-      <button class="p-add" onclick="${soldOut?'':(`addCart('${p.id}','${p.cat}','${p.mat}',0,1)`)}" ${soldOut?'disabled':''}>${soldOut?'Sold Out':'Add to Cart'}</button>
+      <button class="p-add" onclick="${soldOut?'':(`_addFromCard('${cid}')`)}" ${soldOut?'disabled':''}>${soldOut?'Sold Out':'Add to Cart'}</button>
     </div>
   </div>`;
 }
 
 // ═══════════════════════════════════════
-// METALLIC SWATCH HELPER
+// CARD COLOUR SELECTION & IMAGE SWIPING
 // ═══════════════════════════════════════
+
+// Select a colour on a product card — rebuilds image track for that colour
+function _selCardColor(e, cid, colorIdx){
+  e.stopPropagation();
+  const card = document.getElementById(cid);
+  if(!card) return;
+  card.dataset.sel = colorIdx;
+  const pid = card.dataset.pid;
+  const cat = card.dataset.cat;
+  const mat = card.dataset.mat;
+  const p = findProduct(pid, cat, mat);
+  if(!p) return;
+
+  // Update active dot
+  card.querySelectorAll('.p-color-dot').forEach((d,i) => d.classList.toggle('active', i===colorIdx));
+
+  // Rebuild image track for the selected colour
+  const imgs = getColorImages(p, colorIdx);
+  const track = document.getElementById(cid+'-track');
+  if(!track) return;
+
+  if(imgs.length > 0){
+    track.innerHTML = imgs.map(url => `<div class="p-card-slide"><img src="${url}" alt="${p.name}"></div>`).join('');
+  } else {
+    track.innerHTML = `<div class="p-card-slide"><span class="p-card-icon">${p.icon||'👓'}</span></div>`;
+  }
+  track.dataset.idx = '0';
+  track.dataset.len = String(Math.max(imgs.length, 1));
+  track.style.transform = 'translateX(0)';
+
+  // Rebuild dot indicators
+  const imgArea = card.querySelector('.p-card-img');
+  const oldDots = imgArea.querySelector('.p-card-dots');
+  if(oldDots) oldDots.remove();
+  if(imgs.length > 1){
+    const dotsDiv = document.createElement('div');
+    dotsDiv.className = 'p-card-dots';
+    dotsDiv.innerHTML = imgs.map((_,i) => `<div class="p-card-dot${i===0?' on':''}"></div>`).join('');
+    imgArea.appendChild(dotsDiv);
+  }
+}
+
+// Tap on card image — go to product detail (but only if not swiping)
+let _didSwipe = false;
+function _cardTap(e, cid){
+  if(_didSwipe){ _didSwipe = false; return; }
+  const card = document.getElementById(cid);
+  if(!card) return;
+  showProduct(card.dataset.pid, card.dataset.cat, card.dataset.mat);
+}
+
+// Add to cart from card — uses the currently selected colour
+function _addFromCard(cid){
+  const card = document.getElementById(cid);
+  if(!card) return;
+  const colorIdx = parseInt(card.dataset.sel) || 0;
+  addCart(card.dataset.pid, card.dataset.cat, card.dataset.mat, colorIdx, 1);
+}
+
+// ── Touch swipe logic for product cards ──
+const _swState = {};
+
+function _swStart(e, cid){
+  const touch = e.touches[0];
+  _swState[cid] = {
+    startX: touch.clientX,
+    startY: touch.clientY,
+    startTime: Date.now(),
+    moved: false,
+    locked: false // true = horizontal lock, false = not yet decided
+  };
+  const track = document.getElementById(cid+'-track');
+  if(track) track.classList.add('swiping');
+}
+
+function _swMove(e, cid){
+  const s = _swState[cid];
+  if(!s) return;
+  const touch = e.touches[0];
+  const dx = touch.clientX - s.startX;
+  const dy = touch.clientY - s.startY;
+
+  // Decide lock direction on first significant movement
+  if(!s.locked && (Math.abs(dx) > 8 || Math.abs(dy) > 8)){
+    if(Math.abs(dx) > Math.abs(dy)){
+      s.locked = 'h'; // horizontal — we handle it
+    } else {
+      s.locked = 'v'; // vertical — let browser scroll
+      return;
+    }
+  }
+  if(s.locked === 'v') return;
+  if(s.locked !== 'h') return;
+
+  e.preventDefault(); // prevent vertical scroll while swiping horizontally
+  s.moved = true;
+
+  const track = document.getElementById(cid+'-track');
+  if(!track) return;
+  const idx = parseInt(track.dataset.idx) || 0;
+  const offset = -(idx * 100);
+  const pct = (dx / track.parentElement.offsetWidth) * 100;
+  track.style.transform = `translateX(${offset + pct}%)`;
+}
+
+function _swEnd(e, cid){
+  const s = _swState[cid];
+  if(!s) return;
+
+  const track = document.getElementById(cid+'-track');
+  if(track) track.classList.remove('swiping');
+
+  if(!s.moved || s.locked !== 'h'){
+    delete _swState[cid];
+    return;
+  }
+
+  _didSwipe = true; // prevent tap from firing
+  const touch = e.changedTouches[0];
+  const dx = touch.clientX - s.startX;
+  const len = parseInt(track?.dataset.len) || 1;
+  let idx = parseInt(track?.dataset.idx) || 0;
+  const threshold = 40; // minimum px to count as a swipe
+
+  if(dx < -threshold && idx < len - 1) idx++;
+  else if(dx > threshold && idx > 0) idx--;
+
+  if(track){
+    track.dataset.idx = String(idx);
+    track.style.transform = `translateX(-${idx * 100}%)`;
+    // Update dots
+    const card = document.getElementById(cid);
+    if(card){
+      card.querySelectorAll('.p-card-dot').forEach((d,i) => d.classList.toggle('on', i===idx));
+    }
+  }
+
+  delete _swState[cid];
+  // Reset _didSwipe after a short delay so next tap works
+  setTimeout(() => { _didSwipe = false; }, 100);
+}
+
+// Reset card UID counter when re-rendering grids (prevents stale IDs)
+function _resetCardUid(){ _cardUid = 0; }
 const METALLIC_NAMES = ['gold','silver','rosegold','rose gold','gunmetal','bronze','titanium','chrome','tortoise','clear'];
 function getSwatchClass(name){
   const n=(name||'').toLowerCase().replace(/\s/g,'');
@@ -1929,10 +2116,12 @@ function renderCart(){
     body.innerHTML=`<div class="cart-empty"><div style="font-size:48px;margin-bottom:12px">🛍</div><p>Your cart is empty</p></div>`;
     document.getElementById('cart-foot').style.display='none';return;
   }
-  body.innerHTML=cart.map(c=>`
-    <div class="c-item">
+  body.innerHTML=cart.map(c=>{
+    const cImgs = getColorImages(c.p, c.colorIdx);
+    const thumb = cImgs.length ? `<img src="${cImgs[0]}" alt="${c.p.name}">` : `<span>${c.p.icon||'👓'}</span>`;
+    return `<div class="c-item">
       <div class="c-item-img" style="background:${(c.p.colors||[])[c.colorIdx]?.hex||'#f5ede3'}22">
-        ${c.p.images&&c.p.images[0]?`<img src="${c.p.images[0]}" alt="${c.p.name}">`:`<span>${c.p.icon||'👓'}</span>`}
+        ${thumb}
       </div>
       <div class="c-item-info">
         <div class="c-item-name">${c.p.name}</div>
@@ -1945,7 +2134,8 @@ function renderCart(){
           <button class="c-remove" onclick="cartRemove('${c.key}')">Remove</button>
         </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
   document.getElementById('c-sub').textContent='₹'+sub.toLocaleString('en-IN');
   document.getElementById('c-total').textContent='₹'+sub.toLocaleString('en-IN');
@@ -1967,17 +2157,7 @@ function goCheckout(method){
   if(method) payMethod=method;
   document.getElementById('cart-overlay').classList.remove('open');
   document.getElementById('cart-sidebar').classList.remove('open');
-  const sub=cart.reduce((s,c)=>s+c.p.price*c.qty,0);
-  const tax=Math.round(sub*.18);
-  document.getElementById('co-items').innerHTML=cart.map(c=>`
-    <div class="co-item">
-      <div class="co-item-img">${c.p.images&&c.p.images[0]?`<img src="${c.p.images[0]}">`:`<span>${c.p.icon||'👓'}</span>`}</div>
-      <div style="flex:1"><div class="co-item-name">${c.p.name}</div><div class="co-item-meta">${(c.p.colors||[])[c.colorIdx]?.name||''} · Qty ${c.qty}</div></div>
-      <div class="co-item-price">₹${(c.p.price*c.qty).toLocaleString('en-IN')}</div>
-    </div>`).join('');
-  document.getElementById('co-sub').textContent='₹'+sub.toLocaleString('en-IN');
-  document.getElementById('co-tax').textContent='₹'+tax.toLocaleString('en-IN');
-  document.getElementById('co-total').textContent='₹'+(sub+tax).toLocaleString('en-IN');
+  _rebuildCheckoutSummary();
   selPay(payMethod);
   history.pushState({page:'checkout'},'','#checkout');
   _savePage('checkout');
